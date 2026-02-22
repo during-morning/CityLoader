@@ -5,8 +5,10 @@ import com.during.cityloader.worldgen.ChunkHeightmap;
 import com.during.cityloader.worldgen.IDimensionInfo;
 import com.during.cityloader.worldgen.LostCityProfile;
 import com.during.cityloader.worldgen.lost.BuildingInfo;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.bukkit.generator.WorldInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DisplayName("CityCoreStage 地形嵌合测试")
@@ -104,6 +109,52 @@ class CityCoreStageSurfaceEmbeddingTest {
         assertTrue(targets[15][8] < centerY, "东边缘应低于中心");
         assertTrue(targets[8][0] < centerY, "北边缘应低于中心");
         assertTrue(targets[8][15] < centerY, "南边缘应低于中心");
+    }
+
+    @Test
+    @DisplayName("大高差邻块时建筑边缘应允许更深下沉以形成过渡")
+    void shouldAllowDeeperApronDropForLargeHeightDifference() throws Exception {
+        IDimensionInfo provider = mockProviderWithNeighborHeights(70, 40);
+        BuildingInfo center = BuildingInfo.getBuildingInfo(new ChunkCoord("world", 0, 0), provider);
+        center.isCity = true;
+        center.hasBuilding = true;
+        center.groundLevel = 70;
+        center.cityLevel = 0;
+
+        int centerY = center.getCityGroundLevel() - 1;
+        int[][] targets = invokeBuildingTargets(center, centerY);
+
+        assertEquals(centerY - 8, targets[0][8], "边缘下沉应达到更深过渡上限");
+        assertEquals(centerY - 8, targets[15][8], "边缘下沉应达到更深过渡上限");
+    }
+
+    @Test
+    @DisplayName("建筑净空应保留与非建筑邻块相接的边缘过渡带")
+    void shouldKeepTransitionBandWhenClearingBuildingEnvelope() throws Exception {
+        IDimensionInfo provider = mockProvider();
+        BuildingInfo center = BuildingInfo.getBuildingInfo(new ChunkCoord("world", 0, 0), provider);
+        center.isCity = true;
+        center.hasBuilding = true;
+        center.groundLevel = 70;
+        center.cityLevel = 0;
+        center.cellars = 1;
+        center.floors = 2;
+
+        GenerationContext context = mock(GenerationContext.class);
+        WorldInfo worldInfo = mock(WorldInfo.class);
+        when(worldInfo.getMinHeight()).thenReturn(-64);
+        when(worldInfo.getMaxHeight()).thenReturn(320);
+        when(context.getWorldInfo()).thenReturn(worldInfo);
+
+        Method method = CityCoreStage.class.getDeclaredMethod(
+                "clearBuildingAirEnvelope", GenerationContext.class, BuildingInfo.class);
+        method.setAccessible(true);
+        method.invoke(new CityCoreStage(), context, center);
+
+        verify(context, never()).setBlock(eq(0), anyInt(), anyInt(), eq(Material.AIR));
+        verify(context, never()).setBlock(eq(15), anyInt(), anyInt(), eq(Material.AIR));
+        verify(context, never()).setBlock(anyInt(), anyInt(), eq(0), eq(Material.AIR));
+        verify(context, never()).setBlock(anyInt(), anyInt(), eq(15), eq(Material.AIR));
     }
 
     private int[][] invokeStreetTargets(BuildingInfo info, int fallbackY) throws Exception {

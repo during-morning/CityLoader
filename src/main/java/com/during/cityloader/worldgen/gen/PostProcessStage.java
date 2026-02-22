@@ -70,9 +70,6 @@ public class PostProcessStage implements GenerationStage {
                 if (!profile.isGenerateLoot()) {
                     return;
                 }
-                if (context.getRandom().nextFloat() < profile.getChestWithoutLootChance()) {
-                    return;
-                }
             }
             String lootTable = resolveConditionValue(context, todo.loot(), todo);
             if (lootTable != null && !lootTable.isBlank()) {

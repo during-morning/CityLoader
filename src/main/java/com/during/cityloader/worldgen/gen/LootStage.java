@@ -2,15 +2,9 @@ package com.during.cityloader.worldgen.gen;
 
 import com.during.cityloader.worldgen.LostCityProfile;
 import com.during.cityloader.worldgen.lost.BuildingInfo;
-import com.during.cityloader.worldgen.lost.cityassets.CityStyle;
-import com.during.cityloader.worldgen.lost.cityassets.CompiledPalette;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
+import org.bukkit.block.Biome;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.NamespacedKey;
 
 import java.util.Random;
 
@@ -58,9 +52,13 @@ public class LootStage implements GenerationStage {
         int cx = chestX[random.nextInt(chestX.length)];
         int cz = chestZ[random.nextInt(chestZ.length)];
         
+        String lootTable = resolveLootTable(context, floorY, cx, cz, random);
         if (context.getBlockType(cx, floorY, cz) == Material.AIR) {
             Material chestType = random.nextFloat() < 0.8f ? Material.CHEST : Material.TRAPPED_CHEST;
             context.setBlock(cx, floorY, cz, chestType);
+            if (profile != null && profile.isGenerateLoot()) {
+                context.queueLootTable(cx, floorY, cz, lootTable);
+            }
         }
         
         if (random.nextFloat() > 0.7f) {
@@ -69,8 +67,17 @@ public class LootStage implements GenerationStage {
             
             if (context.getBlockType(cx2, floorY, cz2) == Material.AIR) {
                 context.setBlock(cx2, floorY, cz2, Material.CHEST);
+                if (profile != null && profile.isGenerateLoot()) {
+                    context.queueLootTable(cx2, floorY, cz2, resolveLootTable(context, floorY, cx2, cz2, random));
+                }
             }
         }
+    }
+
+    private String resolveLootTable(GenerationContext context, int y, int localX, int localZ, Random random) {
+        Biome biome = context.getDimensionInfo().getBiome(context.worldX(localX), y, context.worldZ(localZ));
+        String biomeName = biome == null ? null : biome.name();
+        return getLootTableForBiome(biomeName, random);
     }
 
     public static String getLootTableForBiome(String biomeName, Random random) {

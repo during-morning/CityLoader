@@ -29,8 +29,13 @@ public class CityCoreStage implements GenerationStage {
     private static final int STREET_RETAINING_WALL_MIN_DROP = 3;
     private static final int STREET_CENTER_MIN = 4;
     private static final int STREET_CENTER_MAX = 11;
+    private static final int STREET_MIN_CARVE_DEPTH = 12;
     private static final int BUILDING_APRON_INSET = 4;
-    private static final int BUILDING_APRON_MAX_DROP = 5;
+    private static final int BUILDING_APRON_MAX_DROP = 8;
+    private static final int BUILDING_MIN_CARVE_DEPTH = 16;
+    private static final int BUILDING_RETAINING_WALL_MIN_DROP = 2;
+    private static final int BUILDING_SUPPORT_MAX_DEPTH = 4;
+    private static final int BUILDING_EDGE_TRANSITION_BAND = 2;
 
     @Override
     public void generate(GenerationContext context) {
@@ -54,6 +59,7 @@ public class CityCoreStage implements GenerationStage {
         
         LostCityProfile profile = getProfile(context);
         boolean terrainFixEnabled = isTerrainFixEnabled(profile);
+        clearBuildingAirEnvelope(context, info);
         
         for (int floor = -info.cellars; floor < info.floors; floor++) {
             int floorY = info.getCityGroundLevel() + floor * GenerationHeightModel.FLOOR_HEIGHT;
@@ -61,6 +67,7 @@ public class CityCoreStage implements GenerationStage {
             renderPart(context, info.getFloor(floor), palette, floorY, false, info.getFloorTransform(floor), applyFoundationFix, profile);
             renderPart(context, info.getFloorPart2(floor), palette, floorY, true, info.getFloorPart2Transform(floor), false, profile);
         }
+        sealExposedBuildingEdges(context, info);
     }
 
     private LostCityProfile getProfile(GenerationContext context) {
@@ -69,6 +76,119 @@ public class CityCoreStage implements GenerationStage {
             return dimInfo.getProfile();
         }
         return null;
+    }
+
+    private void clearBuildingAirEnvelope(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding) {
+            return;
+        }
+        int minY = context.getWorldInfo().getMinHeight();
+        int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        int cellars = Math.max(0, info.cellars);
+        int clearFrom = Math.max(minY, info.getCityGroundLevel() - cellars * GenerationHeightModel.FLOOR_HEIGHT);
+        int clearTo = Math.min(maxY, info.getMaxHeight() + 6);
+        if (clearFrom > clearTo) {
+            return;
+        }
+
+        boolean clearWestEdge = isBuildingChunk(info.getXmin());
+        boolean clearEastEdge = isBuildingChunk(info.getXmax());
+        boolean clearNorthEdge = isBuildingChunk(info.getZmin());
+        boolean clearSouthEdge = isBuildingChunk(info.getZmax());
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                if (!clearWestEdge && x < BUILDING_EDGE_TRANSITION_BAND) {
+                    continue;
+                }
+                if (!clearEastEdge && x > 15 - BUILDING_EDGE_TRANSITION_BAND) {
+                    continue;
+                }
+                if (!clearNorthEdge && z < BUILDING_EDGE_TRANSITION_BAND) {
+                    continue;
+                }
+                if (!clearSouthEdge && z > 15 - BUILDING_EDGE_TRANSITION_BAND) {
+                    continue;
+                }
+                for (int y = clearFrom; y <= clearTo; y++) {
+                    context.setBlock(x, y, z, Material.AIR);
+                }
+            }
+        }
+    }
+
+    private void sealExposedBuildingEdges(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding) {
+            return;
+        }
+        int minY = context.getWorldInfo().getMinHeight();
+        int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        int fromY = Math.max(minY, info.getCityGroundLevel() - Math.max(0, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT);
+        int toY = Math.min(maxY, info.getMaxHeight() + 2);
+
+        Material edgeFill = Material.STONE_BRICKS;
+        if (!isBuildingChunk(info.getXmin())) {
+            for (int z = 0; z < 16; z++) {
+                sealEdgeColumn(context, 0, z, 1, z, fromY, toY, edgeFill);
+            }
+        }
+        if (!isBuildingChunk(info.getXmax())) {
+            for (int z = 0; z < 16; z++) {
+                sealEdgeColumn(context, 15, z, 14, z, fromY, toY, edgeFill);
+            }
+        }
+        if (!isBuildingChunk(info.getZmin())) {
+            for (int x = 0; x < 16; x++) {
+                sealEdgeColumn(context, x, 0, x, 1, fromY, toY, edgeFill);
+            }
+        }
+        if (!isBuildingChunk(info.getZmax())) {
+            for (int x = 0; x < 16; x++) {
+                sealEdgeColumn(context, x, 15, x, 14, fromY, toY, edgeFill);
+            }
+        }
+    }
+
+    private boolean isBuildingChunk(BuildingInfo info) {
+        return info != null && info.isCity && info.hasBuilding;
+    }
+
+    private void sealEdgeColumn(GenerationContext context,
+                                int edgeX,
+                                int edgeZ,
+                                int innerX,
+                                int innerZ,
+                                int fromY,
+                                int toY,
+                                Material fallback) {
+        for (int y = fromY; y <= toY; y++) {
+            Material edge = context.getBlockType(edgeX, y, edgeZ);
+            if (!isAir(edge)) {
+                continue;
+            }
+            Material inner = context.getBlockType(innerX, y, innerZ);
+            if (isAir(inner)) {
+                continue;
+            }
+            Material fill = isReplaceableForFacade(inner) ? fallback : inner;
+            context.setBlock(edgeX, y, edgeZ, fill);
+        }
+    }
+
+    private boolean isAir(Material material) {
+        return material == null || material == Material.AIR || material == Material.CAVE_AIR || material == Material.VOID_AIR;
+    }
+
+    private boolean isReplaceableForFacade(Material material) {
+        if (material == null) {
+            return true;
+        }
+        String name = material.name();
+        return material == Material.WATER
+                || material == Material.LAVA
+                || material == Material.TALL_GRASS
+                || "GRASS".equals(name)
+                || "SHORT_GRASS".equals(name);
     }
 
     private boolean isTerrainFixEnabled(LostCityProfile profile) {
@@ -113,8 +233,10 @@ public class CityCoreStage implements GenerationStage {
             for (int z = 0; z < 16; z++) {
                 int terrainHeight = TerrainEmbeddingEngine.terrainHeight(heightmap, x, z, cityGround);
                 if (buildingChunk) {
-                    // 建筑区采用边缘裙边过渡并仅补土不挖空，减少边缘断崖感。
+                    // 建筑区采用边缘裙边过渡，并允许足够深度的有限挖方，避免山体穿入建筑。
                     int targetY = smoothedTargets == null ? cityGround - 1 : smoothedTargets[x][z];
+                    int carveDepth = Math.max(BUILDING_MIN_CARVE_DEPTH,
+                            maxLower + GenerationHeightModel.FLOOR_HEIGHT * 3);
                     TerrainEmbeddingEngine.embedSurfaceColumnLimited(
                             context,
                             x,
@@ -123,9 +245,10 @@ public class CityCoreStage implements GenerationStage {
                             targetY,
                             base,
                             maxRaise + GenerationHeightModel.FLOOR_HEIGHT,
-                            0);
+                            carveDepth);
                 } else {
                     int targetY = smoothedTargets == null ? cityGround : smoothedTargets[x][z];
+                    int carveDepth = Math.max(STREET_MIN_CARVE_DEPTH, maxLower);
                     TerrainEmbeddingEngine.embedSurfaceColumnLimited(
                             context,
                             x,
@@ -134,9 +257,13 @@ public class CityCoreStage implements GenerationStage {
                             targetY,
                             base,
                             maxRaise,
-                            maxLower);
+                            carveDepth);
                 }
             }
+        }
+
+        if (buildingChunk) {
+            applyBuildingRetainingSkirt(context, smoothedTargets, base);
         }
     }
 
@@ -222,6 +349,57 @@ public class CityCoreStage implements GenerationStage {
             targets[15][i] = east;
             targets[i][0] = north;
             targets[i][15] = south;
+        }
+    }
+
+    private void applyBuildingRetainingSkirt(GenerationContext context, int[][] targets, Material wall) {
+        if (targets == null) {
+            return;
+        }
+        if (wall == null || wall == Material.AIR) {
+            wall = Material.STONE_BRICKS;
+        }
+        IDimensionInfo dimInfo = context.getDimensionInfo();
+        if (dimInfo == null) {
+            return;
+        }
+
+        ChunkHeightmap westHeightmap = dimInfo.getHeightmap(context.getChunkX() - 1, context.getChunkZ());
+        ChunkHeightmap eastHeightmap = dimInfo.getHeightmap(context.getChunkX() + 1, context.getChunkZ());
+        ChunkHeightmap northHeightmap = dimInfo.getHeightmap(context.getChunkX(), context.getChunkZ() - 1);
+        ChunkHeightmap southHeightmap = dimInfo.getHeightmap(context.getChunkX(), context.getChunkZ() + 1);
+        int minY = context.getWorldInfo().getMinHeight();
+
+        for (int i = 0; i < 16; i++) {
+            buildRetainingWallColumn(context, 0, i, targets[0][i],
+                    TerrainEmbeddingEngine.terrainHeight(westHeightmap, 15, i, targets[0][i]),
+                    wall, minY);
+            buildRetainingWallColumn(context, 15, i, targets[15][i],
+                    TerrainEmbeddingEngine.terrainHeight(eastHeightmap, 0, i, targets[15][i]),
+                    wall, minY);
+            buildRetainingWallColumn(context, i, 0, targets[i][0],
+                    TerrainEmbeddingEngine.terrainHeight(northHeightmap, i, 15, targets[i][0]),
+                    wall, minY);
+            buildRetainingWallColumn(context, i, 15, targets[i][15],
+                    TerrainEmbeddingEngine.terrainHeight(southHeightmap, i, 0, targets[i][15]),
+                    wall, minY);
+        }
+    }
+
+    private void buildRetainingWallColumn(GenerationContext context,
+                                          int x,
+                                          int z,
+                                          int topY,
+                                          int outsideY,
+                                          Material wall,
+                                          int minY) {
+        int drop = topY - outsideY;
+        if (drop < BUILDING_RETAINING_WALL_MIN_DROP) {
+            return;
+        }
+        int bottom = Math.max(minY, outsideY + 1);
+        for (int y = topY; y >= bottom; y--) {
+            context.setBlock(x, y, z, wall);
         }
     }
 
@@ -490,13 +668,11 @@ public class CityCoreStage implements GenerationStage {
             for (int z = 0; z < 16; z++) {
                 if (!renderedStreetPart) {
                     context.setBlock(x, y - 1, z, roadBase);
-                    context.setBlock(x, y, z, ((x + z) & 1) == 0 ? road : roadVariant);
-                    // 仅清理少量街面净空，避免整列挖空导致断层。
-                    context.setBlock(x, y + 1, z, Material.AIR);
-                    context.setBlock(x, y + 2, z, Material.AIR);
+                    context.setBlock(x, y, z, pickStreetSurface(context, x, z, road, roadVariant));
                 }
 
                 int terrainHeight = TerrainEmbeddingEngine.terrainHeight(heightmap, x, z, y - 1);
+                clearStreetHeadroom(context, x, z, y, terrainHeight);
                 int foundationDepth = isEdge(x, z) ? 64 : 24;
                 fillStreetFoundation(context, x, z, y - 1, terrainHeight, roadBase, foundationDepth);
                 applyRetainingWall(context, x, z, y - 1, wallMaterial,
@@ -753,6 +929,56 @@ public class CityCoreStage implements GenerationStage {
         return info.highwayXLevel <= 0 && info.highwayZLevel <= 0;
     }
 
+    private Material pickStreetSurface(GenerationContext context, int x, int z, Material primary, Material variant) {
+        Material safePrimary = primary == null ? Material.STONE_BRICKS : primary;
+        Material safeVariant = variant == null ? safePrimary : variant;
+
+        long hash = 0x9E3779B97F4A7C15L;
+        hash ^= (long) context.getChunkX() * 341873128712L;
+        hash ^= (long) context.getChunkZ() * 132897987541L;
+        hash ^= (long) x * 0x517cc1b727220a95L;
+        hash ^= (long) z * 0x94d049bb133111ebL;
+        int roll = (int) Math.floorMod(hash, 100);
+
+        Material accentA = chooseStreetAccentA(safePrimary, safeVariant);
+        Material accentB = chooseStreetAccentB(safePrimary, safeVariant);
+
+        if (roll < 56) {
+            return safePrimary;
+        }
+        if (roll < 84) {
+            return safeVariant;
+        }
+        if (roll < 95) {
+            return accentA;
+        }
+        return accentB;
+    }
+
+    private Material chooseStreetAccentA(Material primary, Material variant) {
+        if (isMossy(primary) || isMossy(variant)) {
+            return Material.COBBLESTONE;
+        }
+        if (variant != primary) {
+            return variant;
+        }
+        return Material.MOSSY_COBBLESTONE;
+    }
+
+    private Material chooseStreetAccentB(Material primary, Material variant) {
+        if (isMossy(primary) || isMossy(variant)) {
+            return Material.STONE_BRICKS;
+        }
+        return Material.CRACKED_STONE_BRICKS;
+    }
+
+    private boolean isMossy(Material material) {
+        if (material == null) {
+            return false;
+        }
+        return material.name().contains("MOSSY");
+    }
+
     private CompiledPalette composePalette(GenerationContext context, BuildingPart part) {
         List<Palette> additions = new ArrayList<>();
         if (part.getLocalPalette() != null) {
@@ -804,6 +1030,14 @@ public class CityCoreStage implements GenerationStage {
         int targetBottom = Math.max(bottom, terrainHeight);
         for (int y = fromY; y >= targetBottom; y--) {
             context.setBlock(x, y, z, base);
+        }
+    }
+
+    private void clearStreetHeadroom(GenerationContext context, int x, int z, int roadY, int terrainHeight) {
+        int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        int clearTo = Math.min(maxY, Math.max(roadY + 3, terrainHeight));
+        for (int y = roadY + 1; y <= clearTo; y++) {
+            context.setBlock(x, y, z, Material.AIR);
         }
     }
 
@@ -943,6 +1177,7 @@ public class CityCoreStage implements GenerationStage {
         int maxLower = Math.max(1, Math.max(
                 Math.abs(profile.getTerrainFixUpperMinOffset()),
                 Math.abs(profile.getTerrainFixUpperMaxOffset())));
+        int clearCeiling = Math.max(baseY + maxLower, context.getBuildingInfo().getMaxHeight() + 1);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -956,14 +1191,15 @@ public class CityCoreStage implements GenerationStage {
 
                 if (terrainHeight >= baseY) {
                     int clearFrom = Math.max(baseY, minY);
-                    int clearTo = Math.min(terrainHeight, baseY + maxLower);
+                    int clearTo = Math.min(terrainHeight, clearCeiling);
                     clearTo = Math.min(clearTo, maxY);
                     for (int y = clearFrom; y <= clearTo; y++) {
                         context.setBlock(x, y, z, Material.AIR);
                     }
                 }
 
-                TerrainEmbeddingEngine.supportColumnToTerrain(context, x, z, foundationTop, terrainHeight, support);
+                int supportBottom = Math.max(terrainHeight, foundationTop - BUILDING_SUPPORT_MAX_DEPTH);
+                TerrainEmbeddingEngine.supportColumnToTerrain(context, x, z, foundationTop, supportBottom, support);
             }
         }
     }

@@ -373,20 +373,54 @@ public class GenerationContext {
         if (lootTableId == null || lootTableId.isBlank()) {
             return;
         }
-        NamespacedKey key = NamespacedKey.fromString(lootTableId.trim());
-        if (key == null) {
-            return;
-        }
-        LootTable lootTable = Bukkit.getLootTable(key);
+        String trimmedId = lootTableId.trim();
+        NamespacedKey key = NamespacedKey.fromString(trimmedId);
+        LootTable lootTable = key == null ? null : Bukkit.getLootTable(key);
         if (lootTable == null) {
+            NamespacedKey fallback = NamespacedKey.fromString("minecraft:chests/simple_dungeon");
+            if (fallback != null) {
+                lootTable = Bukkit.getLootTable(fallback);
+            }
+        }
+
+        if (lootTable == null) {
+            if (key != null && "keerdm_zombie_essentials".equals(key.getNamespace())) {
+                ItemStack[] generated = LootStage.generateKeerdmLoot(trimmedId, random);
+                queueBlockStateTask(localX, y, localZ, state -> {
+                    if (!(state instanceof Container container)) {
+                        return false;
+                    }
+                    Inventory inventory = container.getSnapshotInventory();
+                    if (inventory == null) {
+                        return false;
+                    }
+                    inventory.clear();
+                    int slot = 0;
+                    for (ItemStack item : generated) {
+                        if (item == null || item.getType() == Material.AIR) {
+                            continue;
+                        }
+                        while (slot < inventory.getSize() && inventory.getItem(slot) != null) {
+                            slot++;
+                        }
+                        if (slot >= inventory.getSize()) {
+                            break;
+                        }
+                        inventory.setItem(slot, item);
+                        slot++;
+                    }
+                    return true;
+                });
+            }
             return;
         }
+        final LootTable resolvedLootTable = lootTable;
         long seed = random == null ? 0L : random.nextLong();
         queueBlockStateTask(localX, y, localZ, state -> {
             if (!(state instanceof Lootable lootable)) {
                 return false;
             }
-            lootable.setLootTable(lootTable, seed);
+            lootable.setLootTable(resolvedLootTable, seed);
             return true;
         });
     }
@@ -517,10 +551,12 @@ public class GenerationContext {
         }
 
         int colon = materialId.indexOf(':');
-        if (colon < 0 || colon >= materialId.length() - 1) {
+        String path = colon < 0
+                ? materialId.toLowerCase(Locale.ROOT)
+                : materialId.substring(colon + 1).toLowerCase(Locale.ROOT);
+        if (path.isBlank()) {
             return null;
         }
-        String path = materialId.substring(colon + 1).toLowerCase(Locale.ROOT);
 
         String directAlias = NON_VANILLA_BLOCK_ALIASES.get(path);
         Material material = matchMaterial(directAlias);
@@ -557,7 +593,28 @@ public class GenerationContext {
         if (path.contains("cube")) {
             return Material.IRON_BLOCK;
         }
-        return null;
+        return pickRuinFallbackMaterial(path);
+    }
+
+    /**
+     * 未识别材质统一回退：
+     * 石砖(高概率) / 苔藓石砖 / 苔藓块 / 原石 / 苔石。
+     */
+    private Material pickRuinFallbackMaterial(String key) {
+        int roll = Math.floorMod(key.hashCode(), 100);
+        if (roll < 58) {
+            return Material.STONE_BRICKS;
+        }
+        if (roll < 76) {
+            return Material.MOSSY_STONE_BRICKS;
+        }
+        if (roll < 86) {
+            return Material.MOSS_BLOCK;
+        }
+        if (roll < 94) {
+            return Material.COBBLESTONE;
+        }
+        return Material.MOSSY_COBBLESTONE;
     }
 
     private String bestTokenAlias(String path) {
