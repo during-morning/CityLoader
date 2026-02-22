@@ -1,0 +1,24 @@
+{
+  "palette": [
+    {
+      "char": "X",
+      "variant": "pomkotsmechs:grayblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "$",
+      "variant": "pomkotsmechs:blackblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "#",
+      "variant": "pomkotsmechs:grayblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "}",
+      "variant": "pomkotsmechs:grayblock",
+      "damaged": "minecraft:iron_bars"
+    }
+  ]
+}

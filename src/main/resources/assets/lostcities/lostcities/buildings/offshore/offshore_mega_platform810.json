@@ -1,0 +1,96 @@
+{
+  "filler": "#",
+  "rubble": "}",
+  "allowDoors": false,
+  "allowFillers": false,
+  "minfloors": 16,
+  "maxfloors": 16,
+  "maxcellars": -1,
+  "parts": [
+    {
+      "floor": 0,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_0"
+    },
+    {
+      "floor": 1,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_1"
+    },
+    {
+      "floor": 2,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_2"
+    },
+    {
+      "floor": 3,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_3"
+    },
+    {
+      "floor": 4,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_4"
+    },
+    {
+      "floor": 5,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_5"
+    },
+    {
+      "floor": 6,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_6"
+    },
+    {
+      "floor": 7,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_7"
+    },
+    {
+      "floor": 8,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_8"
+    },
+    {
+      "floor": 9,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_9"
+    },
+    {
+      "floor": 10,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_10"
+    },
+    {
+      "floor": 11,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_11"
+    },
+    {
+      "floor": 12,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_12"
+    },
+    {
+      "floor": 13,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_13"
+    },
+    {
+      "floor": 14,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_14"
+    },
+    {
+      "floor": 15,
+      "top": false,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_15"
+    },
+    {
+      "floor": 16,
+      "top": true,
+      "part": "pomkotsmechs:offshore/offshore_mega_platform810_16"
+    }
+  ]
+}

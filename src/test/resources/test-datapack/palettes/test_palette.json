@@ -1,0 +1,16 @@
+{
+  "id": "test_palette",
+  "blocks": {
+    "S": "STONE",
+    "B": {
+      "default": "STONE_BRICKS",
+      "weight": 1.0,
+      "seasonal": {
+        "WINTER": "SNOW_BLOCK",
+        "AUTUMN": "TERRACOTTA"
+      }
+    },
+    "G": "GLASS",
+    " ": "AIR"
+  }
+}

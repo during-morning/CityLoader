@@ -1,0 +1,24 @@
+{
+  "blocks": [
+    {
+      "random": 32,
+      "block": "minecraft:diorite"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:quartz_block"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:calcite"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:polished_diorite"
+	},
+    {
+      "random": 1000,
+      "block": "minecraft:polished_diorite"
+    }
+  ]
+}

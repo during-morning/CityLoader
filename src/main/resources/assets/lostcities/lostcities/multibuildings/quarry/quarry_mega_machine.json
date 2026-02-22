@@ -1,0 +1,20 @@
+{
+  "dimx": 2,
+  "dimz": 5,
+  "buildings": [
+    [
+      "pomkotsmechs:quarry/quarry_mega_machine00",
+      "pomkotsmechs:quarry/quarry_mega_machine01",
+      "pomkotsmechs:quarry/quarry_mega_machine02",
+      "pomkotsmechs:quarry/quarry_mega_machine03",
+      "pomkotsmechs:quarry/quarry_mega_machine04"
+    ],
+    [
+      "pomkotsmechs:quarry/quarry_mega_machine10",
+      "pomkotsmechs:quarry/quarry_mega_machine11",
+      "pomkotsmechs:quarry/quarry_mega_machine12",
+      "pomkotsmechs:quarry/quarry_mega_machine13",
+      "pomkotsmechs:quarry/quarry_mega_machine14"
+    ]
+  ]
+}

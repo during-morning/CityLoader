@@ -1,0 +1,16 @@
+{
+    "description": "测试用石质调色板（带季节变化）",
+    "mappings": {
+        "s": "minecraft:stone_bricks",
+        "S": "minecraft:chiseled_stone_bricks",
+        "c": "minecraft:cobblestone",
+        "m": "minecraft:mossy_stone_bricks",
+        "g": "minecraft:glass",
+        "i": "minecraft:iron_bars",
+        "a": "minecraft:air",
+        "l": {
+            "default": "minecraft:torch",
+            "winter": "minecraft:lantern"
+        }
+    }
+}

@@ -1,0 +1,54 @@
+{
+  "dimx": 6,
+  "dimz": 6,
+  "buildings": [
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ]
+  ]
+}

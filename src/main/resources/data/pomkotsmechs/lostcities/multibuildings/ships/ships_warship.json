@@ -1,0 +1,34 @@
+{
+  "dimx": 2,
+  "dimz": 12,
+  "buildings": [
+    [
+      "pomkotsmechs:ships/ships_warship00",
+      "pomkotsmechs:ships/ships_warship01",
+      "pomkotsmechs:ships/ships_warship02",
+      "pomkotsmechs:ships/ships_warship03",
+      "pomkotsmechs:ships/ships_warship04",
+      "pomkotsmechs:ships/ships_warship05",
+      "pomkotsmechs:ships/ships_warship06",
+      "pomkotsmechs:ships/ships_warship07",
+      "pomkotsmechs:ships/ships_warship08",
+      "pomkotsmechs:ships/ships_warship09",
+      "pomkotsmechs:ships/ships_warship010",
+      "pomkotsmechs:ships/ships_warship011"
+    ],
+    [
+      "pomkotsmechs:ships/ships_warship10",
+      "pomkotsmechs:ships/ships_warship11",
+      "pomkotsmechs:ships/ships_warship12",
+      "pomkotsmechs:ships/ships_warship13",
+      "pomkotsmechs:ships/ships_warship14",
+      "pomkotsmechs:ships/ships_warship15",
+      "pomkotsmechs:ships/ships_warship16",
+      "pomkotsmechs:ships/ships_warship17",
+      "pomkotsmechs:ships/ships_warship18",
+      "pomkotsmechs:ships/ships_warship19",
+      "pomkotsmechs:ships/ships_warship110",
+      "pomkotsmechs:ships/ships_warship111"
+    ]
+  ]
+}

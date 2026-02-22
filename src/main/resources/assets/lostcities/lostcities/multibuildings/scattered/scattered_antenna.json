@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_antenna00",
+      "pomkotsmechs:scattered/scattered_antenna01",
+      "pomkotsmechs:scattered/scattered_antenna02"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_antenna10",
+      "pomkotsmechs:scattered/scattered_antenna11",
+      "pomkotsmechs:scattered/scattered_antenna12"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_antenna20",
+      "pomkotsmechs:scattered/scattered_antenna21",
+      "pomkotsmechs:scattered/scattered_antenna22"
+    ]
+  ]
+}

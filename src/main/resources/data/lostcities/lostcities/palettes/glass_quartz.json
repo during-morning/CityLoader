@@ -1,0 +1,34 @@
+{
+  "palette": [
+    {
+	  "char": "@",
+      "blocks": [
+    {
+      "random": 32,
+      "block": "minecraft:diorite",
+	  "damaged": "minecraft:iron_bars"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:quartz_block",
+	  "damaged": "minecraft:iron_bars"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:calcite",
+	  "damaged": "minecraft:iron_bars"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:polished_diorite",
+	  "damaged": "minecraft:iron_bars"
+	},
+    {
+      "random": 1000,
+      "block": "minecraft:polished_diorite",
+	  "damaged": "minecraft:iron_bars"
+	    }
+      ]
+    }
+  ]
+}

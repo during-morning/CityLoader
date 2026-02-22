@@ -1,0 +1,6 @@
+{
+  "buildings": [ "keerdm_zombie_essentials:powerline_west" ],
+  "terrainheight": "highest",
+  "terrainfix": "repeatslice",
+  "heightoffset": -3
+}

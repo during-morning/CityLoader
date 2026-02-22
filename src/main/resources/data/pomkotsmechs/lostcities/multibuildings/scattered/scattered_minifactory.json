@@ -1,0 +1,41 @@
+{
+  "dimx": 5,
+  "dimz": 5,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_minifactory00",
+      "pomkotsmechs:scattered/scattered_minifactory01",
+      "pomkotsmechs:scattered/scattered_minifactory02",
+      "pomkotsmechs:scattered/scattered_minifactory03",
+      "pomkotsmechs:scattered/scattered_minifactory04"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_minifactory10",
+      "pomkotsmechs:scattered/scattered_minifactory11",
+      "pomkotsmechs:scattered/scattered_minifactory12",
+      "pomkotsmechs:scattered/scattered_minifactory13",
+      "pomkotsmechs:scattered/scattered_minifactory14"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_minifactory20",
+      "pomkotsmechs:scattered/scattered_minifactory21",
+      "pomkotsmechs:scattered/scattered_minifactory22",
+      "pomkotsmechs:scattered/scattered_minifactory23",
+      "pomkotsmechs:scattered/scattered_minifactory24"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_minifactory30",
+      "pomkotsmechs:scattered/scattered_minifactory31",
+      "pomkotsmechs:scattered/scattered_minifactory32",
+      "pomkotsmechs:scattered/scattered_minifactory33",
+      "pomkotsmechs:scattered/scattered_minifactory34"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_minifactory40",
+      "pomkotsmechs:scattered/scattered_minifactory41",
+      "pomkotsmechs:scattered/scattered_minifactory42",
+      "pomkotsmechs:scattered/scattered_minifactory43",
+      "pomkotsmechs:scattered/scattered_minifactory44"
+    ]
+  ]
+}

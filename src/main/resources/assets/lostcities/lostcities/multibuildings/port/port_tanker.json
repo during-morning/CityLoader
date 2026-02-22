@@ -1,0 +1,39 @@
+{
+  "dimx": 3,
+  "dimz": 9,
+  "buildings": [
+    [
+      "pomkotsmechs:port/port_tanker00",
+      "pomkotsmechs:port/port_tanker01",
+      "pomkotsmechs:port/port_tanker02",
+      "pomkotsmechs:port/port_tanker03",
+      "pomkotsmechs:port/port_tanker04",
+      "pomkotsmechs:port/port_tanker05",
+      "pomkotsmechs:port/port_tanker06",
+      "pomkotsmechs:port/port_tanker07",
+      "pomkotsmechs:port/port_tanker08"
+    ],
+    [
+      "pomkotsmechs:port/port_tanker10",
+      "pomkotsmechs:port/port_tanker11",
+      "pomkotsmechs:port/port_tanker12",
+      "pomkotsmechs:port/port_tanker13",
+      "pomkotsmechs:port/port_tanker14",
+      "pomkotsmechs:port/port_tanker15",
+      "pomkotsmechs:port/port_tanker16",
+      "pomkotsmechs:port/port_tanker17",
+      "pomkotsmechs:port/port_tanker18"
+    ],
+    [
+      "pomkotsmechs:port/port_tanker20",
+      "pomkotsmechs:port/port_tanker21",
+      "pomkotsmechs:port/port_tanker22",
+      "pomkotsmechs:port/port_tanker23",
+      "pomkotsmechs:port/port_tanker24",
+      "pomkotsmechs:port/port_tanker25",
+      "pomkotsmechs:port/port_tanker26",
+      "pomkotsmechs:port/port_tanker27",
+      "pomkotsmechs:port/port_tanker28"
+    ]
+  ]
+}

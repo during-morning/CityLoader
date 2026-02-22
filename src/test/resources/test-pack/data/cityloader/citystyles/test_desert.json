@@ -1,0 +1,12 @@
+{
+    "id": "test_desert",
+    "description": "沙漠风格 - 使用砂岩作为街道",
+    "streetblocks": {
+        "base": "minecraft:sandstone",
+        "edge": "minecraft:smooth_sandstone"
+    },
+    "parkblocks": {
+        "base": "minecraft:sand",
+        "decoration": "minecraft:dead_bush"
+    }
+}

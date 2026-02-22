@@ -1,0 +1,14 @@
+{
+  "dimx": 2,
+  "dimz": 2,
+  "buildings": [
+    [
+      "pomkotsmechs:quarry/quarry_office00",
+      "pomkotsmechs:quarry/quarry_office01"
+    ],
+    [
+      "pomkotsmechs:quarry/quarry_office10",
+      "pomkotsmechs:quarry/quarry_office11"
+    ]
+  ]
+}

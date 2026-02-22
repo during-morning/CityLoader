@@ -1,0 +1,6 @@
+{
+  "multibuilding": "keerdm_zombie_essentials:zombie_cabin",
+  "terrainheight": "highest",
+  "terrainfix": "repeatslice",
+  "heightoffset": -7
+}

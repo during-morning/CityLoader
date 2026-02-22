@@ -1,0 +1,312 @@
+{
+    "_comment": "CityLoader 统一映射配置 - 支持季节、标签、旧版本和Mod方块转换",
+    "seasons": {
+        "_comment": "季节Mod（如RealisticSeasons）生物群系映射到原版生物群系",
+        "realisticseason:seasonal_forest": "minecraft:forest",
+        "realisticseason:seasonal_plains": "minecraft:plains",
+        "realisticseason:seasonal_taiga": "minecraft:taiga"
+    },
+    "forge_tags": {
+        "_comment": "Forge标签到生物群系/方块列表的映射",
+        "biomes": {
+            "#forge:is_snowy": [
+                "minecraft:snowy_plains",
+                "minecraft:ice_spikes",
+                "minecraft:frozen_ocean",
+                "minecraft:deep_frozen_ocean",
+                "minecraft:frozen_river",
+                "minecraft:snowy_beach",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_slopes",
+                "minecraft:frozen_peaks",
+                "minecraft:jagged_peaks",
+                "minecraft:grove"
+            ],
+            "#forge:is_cold": [
+                "minecraft:snowy_plains",
+                "minecraft:ice_spikes",
+                "minecraft:frozen_ocean",
+                "minecraft:deep_frozen_ocean",
+                "minecraft:frozen_river",
+                "minecraft:snowy_beach",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_slopes",
+                "minecraft:frozen_peaks",
+                "minecraft:jagged_peaks",
+                "minecraft:grove",
+                "minecraft:cold_ocean",
+                "minecraft:deep_cold_ocean",
+                "minecraft:old_growth_pine_taiga",
+                "minecraft:old_growth_spruce_taiga",
+                "minecraft:taiga",
+                "minecraft:windswept_hills",
+                "minecraft:windswept_gravelly_hills",
+                "minecraft:windswept_forest",
+                "minecraft:stony_shore"
+            ],
+            "#forge:is_dry": [
+                "minecraft:desert",
+                "minecraft:badlands",
+                "minecraft:eroded_badlands",
+                "minecraft:wooded_badlands",
+                "minecraft:savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:windswept_savanna"
+            ],
+            "#forge:is_hot": [
+                "minecraft:desert",
+                "minecraft:badlands",
+                "minecraft:eroded_badlands",
+                "minecraft:wooded_badlands",
+                "minecraft:jungle",
+                "minecraft:sparse_jungle",
+                "minecraft:bamboo_jungle",
+                "minecraft:savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:windswept_savanna",
+                "minecraft:nether_wastes",
+                "minecraft:soul_sand_valley",
+                "minecraft:crimson_forest",
+                "minecraft:warped_forest",
+                "minecraft:basalt_deltas"
+            ],
+            "#forge:is_sandy": [
+                "minecraft:desert",
+                "minecraft:beach",
+                "minecraft:snowy_beach"
+            ],
+            "#forge:is_wasteland": [
+                "minecraft:badlands",
+                "minecraft:eroded_badlands",
+                "minecraft:wooded_badlands",
+                "minecraft:nether_wastes",
+                "minecraft:soul_sand_valley",
+                "minecraft:basalt_deltas",
+                "minecraft:end_barrens",
+                "minecraft:small_end_islands"
+            ],
+            "#forge:is_wet": [
+                "minecraft:swamp",
+                "minecraft:mangrove_swamp",
+                "minecraft:jungle",
+                "minecraft:sparse_jungle",
+                "minecraft:bamboo_jungle",
+                "minecraft:river",
+                "minecraft:frozen_river",
+                "minecraft:ocean",
+                "minecraft:deep_ocean",
+                "minecraft:warm_ocean",
+                "minecraft:lukewarm_ocean",
+                "minecraft:deep_lukewarm_ocean",
+                "minecraft:cold_ocean",
+                "minecraft:deep_cold_ocean",
+                "minecraft:frozen_ocean",
+                "minecraft:deep_frozen_ocean"
+            ],
+            "#forge:is_forest": [
+                "minecraft:forest",
+                "minecraft:birch_forest",
+                "minecraft:dark_forest",
+                "minecraft:old_growth_birch_forest",
+                "minecraft:flower_forest",
+                "minecraft:taiga",
+                "minecraft:old_growth_pine_taiga",
+                "minecraft:old_growth_spruce_taiga",
+                "minecraft:snowy_taiga",
+                "minecraft:jungle",
+                "minecraft:bamboo_jungle",
+                "minecraft:sparse_jungle",
+                "minecraft:wooded_badlands",
+                "minecraft:windswept_forest",
+                "minecraft:crimson_forest",
+                "minecraft:warped_forest",
+                "minecraft:grove",
+                "minecraft:cherry_grove",
+                "minecraft:pale_garden"
+            ],
+            "#forge:is_plains": [
+                "minecraft:plains",
+                "minecraft:sunflower_plains",
+                "minecraft:snowy_plains",
+                "minecraft:meadow"
+            ],
+            "#forge:is_mountain": [
+                "minecraft:jagged_peaks",
+                "minecraft:frozen_peaks",
+                "minecraft:stony_peaks",
+                "minecraft:cherry_grove",
+                "minecraft:meadow",
+                "minecraft:grove",
+                "minecraft:snowy_slopes",
+                "minecraft:windswept_hills",
+                "minecraft:windswept_gravelly_hills"
+            ],
+            "#forge:is_hill": [
+                "minecraft:windswept_hills",
+                "minecraft:windswept_gravelly_hills",
+                "minecraft:windswept_forest"
+            ],
+            "#forge:is_swamp": [
+                "minecraft:swamp",
+                "minecraft:mangrove_swamp"
+            ],
+            "#forge:is_ocean": [
+                "minecraft:ocean",
+                "minecraft:deep_ocean",
+                "minecraft:warm_ocean",
+                "minecraft:lukewarm_ocean",
+                "minecraft:deep_lukewarm_ocean",
+                "minecraft:cold_ocean",
+                "minecraft:deep_cold_ocean",
+                "minecraft:frozen_ocean",
+                "minecraft:deep_frozen_ocean"
+            ],
+            "#forge:is_river": [
+                "minecraft:river",
+                "minecraft:frozen_river"
+            ],
+            "#forge:is_beach": [
+                "minecraft:beach",
+                "minecraft:snowy_beach",
+                "minecraft:stony_shore"
+            ],
+            "#forge:is_jungle": [
+                "minecraft:jungle",
+                "minecraft:sparse_jungle",
+                "minecraft:bamboo_jungle"
+            ],
+            "#forge:is_savanna": [
+                "minecraft:savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:windswept_savanna"
+            ],
+            "#forge:is_badlands": [
+                "minecraft:badlands",
+                "minecraft:eroded_badlands",
+                "minecraft:wooded_badlands"
+            ],
+            "#forge:is_mushroom": [
+                "minecraft:mushroom_fields"
+            ],
+            "#forge:is_nether": [
+                "minecraft:nether_wastes",
+                "minecraft:soul_sand_valley",
+                "minecraft:crimson_forest",
+                "minecraft:warped_forest",
+                "minecraft:basalt_deltas"
+            ],
+            "#forge:is_end": [
+                "minecraft:the_end",
+                "minecraft:small_end_islands",
+                "minecraft:end_midlands",
+                "minecraft:end_highlands",
+                "minecraft:end_barrens"
+            ],
+            "#forge:is_cave": [
+                "minecraft:lush_caves",
+                "minecraft:dripstone_caves",
+                "minecraft:deep_dark"
+            ],
+            "#forge:is_magical": [
+                "minecraft:mushroom_fields",
+                "minecraft:deep_dark",
+                "minecraft:pale_garden"
+            ],
+            "#forge:is_overworld": [
+                "minecraft:plains",
+                "minecraft:forest",
+                "minecraft:desert",
+                "minecraft:swamp",
+                "minecraft:ocean",
+                "minecraft:river",
+                "minecraft:taiga",
+                "minecraft:jungle",
+                "minecraft:savanna",
+                "minecraft:badlands",
+                "minecraft:beach",
+                "minecraft:mushroom_fields",
+                "minecraft:meadow",
+                "minecraft:grove",
+                "minecraft:snowy_slopes",
+                "minecraft:jagged_peaks",
+                "minecraft:frozen_peaks",
+                "minecraft:stony_peaks",
+                "minecraft:snowy_plains",
+                "minecraft:ice_spikes",
+                "minecraft:old_growth_birch_forest",
+                "minecraft:old_growth_pine_taiga",
+                "minecraft:old_growth_spruce_taiga",
+                "minecraft:birch_forest",
+                "minecraft:dark_forest",
+                "minecraft:flower_forest",
+                "minecraft:mangrove_swamp",
+                "minecraft:sunflower_plains",
+                "minecraft:windswept_hills",
+                "minecraft:windswept_gravelly_hills",
+                "minecraft:windswept_forest",
+                "minecraft:windswept_savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:eroded_badlands",
+                "minecraft:wooded_badlands",
+                "minecraft:stony_shore",
+                "minecraft:deep_dark",
+                "minecraft:lush_caves",
+                "minecraft:dripstone_caves",
+                "minecraft:pale_garden",
+                "minecraft:cherry_grove"
+            ]
+        },
+        "blocks": {
+            "_comment": "方块标签映射（预留用于未来扩展）"
+        }
+    },
+    "legacy": {
+        "_comment": "旧版本ID和名称映射到当前版本",
+        "numeric_ids": {
+            "1": "minecraft:stone",
+            "2": "minecraft:grass_block",
+            "3": "minecraft:dirt",
+            "4": "minecraft:cobblestone",
+            "5": "minecraft:oak_planks",
+            "98": "minecraft:stone_bricks"
+        },
+        "old_names": {
+            "minecraft:grass": "minecraft:grass_block",
+            "minecraft:stone_brick": "minecraft:stone_bricks",
+            "minecraft:red_flower": "minecraft:poppy",
+            "minecraft:yellow_flower": "minecraft:dandelion",
+            "minecraft:log": "minecraft:oak_log",
+            "minecraft:log2": "minecraft:acacia_log"
+        }
+    },
+    "mod_replacements": {
+        "_comment": "Mod方块替代为原版方块",
+        "exact": {
+            "immersive_weathering:mossy_stone": "minecraft:mossy_stone_bricks",
+            "immersive_weathering:mossy_stone_slab": "minecraft:mossy_stone_brick_slab",
+            "immersive_weathering:mossy_stone_stairs": "minecraft:mossy_stone_brick_stairs",
+            "immersive_weathering:charred_planks": "minecraft:dark_oak_planks",
+            "immersive_weathering:charred_slab": "minecraft:dark_oak_slab",
+            "immersive_weathering:charred_stairs": "minecraft:dark_oak_stairs",
+            "immersive_weathering:charred_log": "minecraft:dark_oak_log",
+            "immersive_weathering:waxed_iron_door": "minecraft:iron_door",
+            "immersive_weathering:weathered_iron_bars": "minecraft:iron_bars",
+            "immersive_weathering:rusted_iron_bars": "minecraft:iron_bars",
+            "immersive_weathering:exposed_iron_bars": "minecraft:iron_bars",
+            "immersive_weathering:cracked_stone_brick_wall": "minecraft:stone_brick_wall",
+            "immersive_weathering:stone_wall": "minecraft:stone_brick_wall",
+            "immersive_weathering:tallow": "minecraft:ochre_froglight",
+            "immersive_weathering:cracked_bricks": "minecraft:cracked_stone_bricks",
+            "immersive_weathering:cut_iron": "minecraft:iron_block",
+            "immersive_weathering:mossy_brick_slab": "minecraft:mossy_stone_brick_slab",
+            "immersive_weathering:mossy_bricks": "minecraft:mossy_stone_bricks",
+            "immersive_weathering:mossy_stone_wall": "minecraft:mossy_stone_brick_wall"
+        },
+        "patterns": {
+            "_comment": "通配符模式匹配 (* 表示任意字符)",
+            "pointblank:*": "minecraft:air",
+            "immersive_weathering:charred_*": "minecraft:dark_oak_*"
+        },
+        "fallback": "minecraft:stone"
+    }
+}

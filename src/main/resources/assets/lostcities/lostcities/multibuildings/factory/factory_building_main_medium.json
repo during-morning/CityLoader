@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_tank_long",
+      "pomkotsmechs:factory/factory_tank_long",
+      "pomkotsmechs:factory/factory_tank_long"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_building_main"
+    ],
+    [
+      "pomkotsmechs:factory/factory_chimney",
+      "pomkotsmechs:factory/factory_chimney",
+      "pomkotsmechs:factory/factory_building_main"
+    ]
+  ]
+}

@@ -1,0 +1,10 @@
+{
+    "description": "简单的地板部件（4x4木板地板）",
+    "palette": "cityloader:test_wood",
+    "slices": [
+        "wwww",
+        "wwww",
+        "wwww",
+        "wwww"
+    ]
+}

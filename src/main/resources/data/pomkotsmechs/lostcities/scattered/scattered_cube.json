@@ -1,0 +1,6 @@
+{
+  "multibuilding": "pomkotsmechs:scattered/scattered_cube",
+  "terrainheight": "highest",
+  "terrainfix": "repeatslice",
+  "heightoffset": -1
+}

@@ -1,0 +1,27 @@
+{
+  "id": "test_floor",
+  "palettes": ["test_palette"],
+  "width": 16,
+  "height": 1,
+  "depth": 16,
+  "structure": [
+    [
+      "BBBBBBBBBBBBBBBB",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "B              B",
+      "BBBBBBBBBBBBBBBB"
+    ]
+  ]
+}

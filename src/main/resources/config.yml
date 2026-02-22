@@ -1,0 +1,417 @@
+# CityLoader配置文件
+# 此文件定义了城市生成的所有参数
+
+# 默认季节（当RealisticSeasons插件不可用时使用）
+# 可选值: SPRING, SUMMER, AUTUMN, WINTER
+default-season: SPRING
+
+# 城市密度（0.0-1.0）
+# 值越高，城市区域越密集
+# 0.3 = 30%的区块会生成城市
+# 建议: 0.5-0.8 用于测试，0.2-0.4 用于正常游戏
+city-density: 0.8
+
+# 建筑高度范围
+min-building-height: 3
+max-building-height: 20
+
+# 街道宽度（方块数）
+street-width: 5
+
+# 生成选项
+generation:
+  # 是否生成地下结构
+  generate-underground: true
+  
+  # 是否生成街道
+  generate-streets: true
+  
+  # 是否与原版地形兼容
+  vanilla-compatible: true
+
+# 资源包路径
+# 插件将从这些路径加载调色板、部件和建筑定义
+# 留空则只加载插件内置资源
+resource-packs: []
+
+# 调试选项
+debug:
+  # 是否启用调试日志
+  enabled: true
+  
+  # 是否记录资源加载详情
+  log-resource-loading: true
+  
+  # 是否记录生成详情
+  log-generation: true
+
+# 性能选项
+performance:
+  # 资源缓存大小
+  cache-size: 1000
+  
+  # 是否启用异步加载
+  async-loading: true
+
+# Profile配置（对齐 LostCities 默认值）
+profiles:
+  # 显式指定Profile（空则使用维度覆盖与默认Profile）
+  selected-profile: ""
+
+  # 维度覆盖：格式 "namespace:dimension=profile"
+  dimensions-with-profiles: []
+
+  # Profile定义（default 为完整参数，其他为增量覆盖）
+  definitions:
+    default:
+      description: "Default generation, common cities, explosions"
+      extra-description: ""
+      warning: ""
+      world-style: "standard"
+      icon: ""
+      highways-enabled: true
+      railways-enabled: true
+      scattered-enabled: true
+      damage-enabled: true
+      liquid-block: "minecraft:water"
+      base-block: "minecraft:stone"
+      vine-chance: 0.009
+      random-leaf-block-chance: 0.1
+      random-leaf-block-thickness: 2
+      avoid-foliage: false
+      scattered-chance-multiplier: 1.0
+      rubble-layer: true
+      rubble-dirt-scale: 3.0
+      rubble-leave-scale: 6.0
+      ruin-chance: 0.05
+      ruin-minlevel-percent: 0.8
+      ruin-maxlevel-percent: 1.0
+      ground-level: 71
+      sea-level: -1
+      highway-requires-two-cities: true
+      highway-level-from-cities: 0
+      highway-main-perlin-scale: 50.0
+      highway-secondary-perlin-scale: 10.0
+      highway-perlin-factor: 2.0
+      highway-distance-mask: 7
+      highway-supports: true
+      railway-dungeon-chance: 0.01
+      railways-can-end: false
+      railways-enabled-flag: true
+      railway-stations-enabled: true
+      railway-surface-stations-enabled: true
+      explosions-in-cities-only: true
+      edit-mode: false
+      generate-nether: false
+      generate-spawners: true
+      generate-loot: true
+      generate-lighting: false
+      avoid-water: false
+      explosion-chance: 0.002
+      explosion-min-radius: 15
+      explosion-max-radius: 35
+      explosion-min-height: 75
+      explosion-max-height: 90
+      mini-explosion-chance: 0.03
+      mini-explosion-min-radius: 5
+      mini-explosion-max-radius: 12
+      mini-explosion-min-height: 60
+      mini-explosion-max-height: 100
+      city-chance: 0.01
+      city-min-radius: 50
+      city-max-radius: 128
+      city-perlin-scale: 3.0
+      city-perlin-inner-scale: 0.1
+      city-perlin-offset: 0.1
+      city-threshold: 0.2
+      city-spawn-distance1: 0
+      city-spawn-distance2: 0
+      city-spawn-multiplier1: 1.0
+      city-spawn-multiplier2: 1.0
+      city-style-threshold: -1.0
+      city-style-alternative: ""
+      city-avoid-void: true
+      citysphere-32grid: false
+      citysphere-factor: 1.2
+      citysphere-chance: 0.7
+      citysphere-surface-variation: 1.0
+      citysphere-outside-surface-variation: 1.0
+      citysphere-monorail-chance: 0.8
+      citysphere-clear-above: 0
+      citysphere-clear-below: 0
+      citysphere-clear-above-until-air: false
+      citysphere-clear-below-until-air: false
+      citysphere-outside-groundlevel: -1
+      citysphere-outside-profile: ""
+      citysphere-only-predefined: false
+      citysphere-monorail-height-offset: -2
+      city-level0-height: 75
+      city-level1-height: 83
+      city-level2-height: 91
+      city-level3-height: 99
+      city-level4-height: 107
+      city-level5-height: 115
+      city-level6-height: 123
+      city-level7-height: 131
+      city-min-height: 50
+      city-max-height: 150
+      ocean-correction-border: 4
+      terrain-fix-lower-min-offset: -4
+      terrain-fix-lower-max-offset: -3
+      terrain-fix-upper-min-offset: -1
+      terrain-fix-upper-max-offset: 1
+      chest-without-loot-chance: 0.2
+      building-without-loot-chance: 0.2
+      building-chance: 0.3
+      building-min-floors: 0
+      building-max-floors: 8
+      building-min-floors-chance: 4
+      building-max-floors-chance: 6
+      building-min-cellars: 0
+      building-max-cellars: 3
+      building-doorway-chance: 0.6
+      building-front-chance: 0.2
+      park-chance: 0.2
+      corridor-chance: 0.7
+      bridge-chance: 0.7
+      fountain-chance: 0.05
+      bridge-supports: true
+      park-elevation: true
+      park-border: true
+      park-street-threshold: 3
+      multi-use-corner: false
+      use-avg-heightmap: false
+      bedrock-layer: 1
+      horizon: -1
+      fog-red: -1
+      fog-green: -1
+      fog-blue: -1
+      fog-density: -1
+      spawn-biome: ""
+      spawn-city: ""
+      spawn-sphere: ""
+      spawn-not-in-building: false
+      force-spawn-in-building: false
+      force-spawn-buildings: []
+      force-spawn-parts: []
+      spawn-check-radius: 200
+      spawn-radius-increase: 100
+      spawn-check-attempts: 20000
+      landscape-type: "default"
+
+    rarecities:
+      inherit: "default"
+      description: "Cities are rare"
+      city-chance: 0.001
+      ruin-chance: 0
+      highway-requires-two-cities: false
+      railways-can-end: true
+
+    floating:
+      inherit: "default"
+      description: "Cities on floating islands"
+      extra-description: "Note! No mineshafts or strongholds in this profile!"
+      warning: "Preferably use this in combination with the Lost Worlds 'islands' world type"
+      icon: "textures/gui/icon_floating.png"
+      city-chance: 0.03
+      landscape-type: "floating"
+      horizon: 0
+      highway-supports: false
+      building-max-cellars: 1
+      railways-can-end: true
+      railways-enabled-flag: false
+      railway-stations-enabled: false
+      highway-distance-mask: 15
+      ground-level: 50
+      city-level0-height: 50
+      city-level1-height: 56
+      city-level2-height: 62
+      city-level3-height: 68
+      city-level4-height: 76
+      city-level5-height: 84
+      city-level6-height: 92
+      city-level7-height: 100
+
+    space:
+      inherit: "default"
+      description: "Cities in floating glass bubbles"
+      extra-description: "Note! No villages, mineshafts or strongholds in this profile!"
+      warning: "Preferably use this in combination with the Lost Worlds 'spheres' world type"
+      icon: "textures/gui/icon_space.png"
+      landscape-type: "space"
+      citysphere-outside-profile: "void_outside"
+      spawn-sphere: "<in>"
+      horizon: 0
+      citysphere-chance: 0.9
+      citysphere-clear-above: 8
+      citysphere-clear-above-until-air: true
+      citysphere-clear-below: 8
+      citysphere-clear-below-until-air: true
+      railways-can-end: true
+      railways-enabled-flag: false
+      railway-stations-enabled: false
+      highway-distance-mask: 0
+      bridge-supports: false
+      highway-supports: false
+      rubble-layer: false
+      ground-level: 71
+      explosion-chance: 0.0001
+      mini-explosion-chance: 0.001
+      city-chance: 0.7
+      city-max-radius: 90
+      city-threshold: 0.05
+      city-level0-height: 60
+      city-level1-height: 66
+      city-level2-height: 72
+      city-level3-height: 78
+      city-level4-height: 86
+      city-level5-height: 94
+      city-level6-height: 100
+      city-level7-height: 108
+      building-chance: 0.3
+      generate-lighting: true
+
+    waterbubbles:
+      inherit: "default"
+      description: "Cities in drowned glass bubbles"
+      icon: "textures/gui/icon_bubbles.png"
+      landscape-type: "space"
+      citysphere-outside-profile: "water_empty"
+      railways-can-end: true
+      railways-enabled-flag: false
+      railway-stations-enabled: false
+      highway-distance-mask: 0
+      rubble-layer: false
+      ground-level: 60
+      explosion-chance: 0
+      mini-explosion-chance: 0
+      city-chance: 0.6
+      city-max-radius: 90
+      city-threshold: 0.05
+      city-level0-height: 60
+      city-level1-height: 66
+      city-level2-height: 72
+      city-level3-height: 78
+      building-chance: 0.3
+      generate-lighting: true
+
+    biosphere:
+      inherit: "default"
+      description: "Jungles in big glass bubbles on a barren landscape"
+      warning: "Preferably use this in combination with the Lost Worlds 'normal' world type"
+      icon: "textures/gui/icon_biosphere.png"
+      landscape-type: "spheres"
+      horizon: 30
+      citysphere-monorail-chance: 0.0
+      citysphere-outside-profile: "bio_wasteland"
+      citysphere-outside-surface-variation: 0.5
+      spawn-sphere: "<in>"
+      explosion-chance: 0.0
+      mini-explosion-chance: 0.01
+      mini-explosion-min-height: 60
+      mini-explosion-max-height: 75
+      mini-explosion-min-radius: 5
+      mini-explosion-max-radius: 10
+      railways-can-end: true
+      railways-enabled-flag: false
+      railway-stations-enabled: false
+      highway-distance-mask: 0
+      ruin-chance: 0.7
+      ruin-minlevel-percent: 0.3
+      ruin-maxlevel-percent: 0.8
+      rubble-layer: false
+      citysphere-chance: 0.5
+      citysphere-clear-above: 30
+      city-chance: 0.8
+      city-min-radius: 50
+      city-max-radius: 65
+      city-threshold: 0.05
+      city-level0-height: 60
+      city-level1-height: 66
+      city-level2-height: 72
+      city-level3-height: 78
+      city-level4-height: 86
+      city-level5-height: 94
+      city-level6-height: 100
+      city-level7-height: 108
+      building-chance: 0.3
+      generate-lighting: true
+
+    biosphere_caves:
+      inherit: "default"
+      description: "Spheres in large caverns"
+      warning: "Use this in combination with the Lost Worlds 'cavespheres' world type"
+      icon: "textures/gui/icon_cavespheres.png"
+      landscape-type: "cavernspheres"
+      horizon: 30
+      citysphere-monorail-chance: 0.0
+      citysphere-outside-profile: "cavern"
+      citysphere-outside-surface-variation: 0.5
+      spawn-sphere: "<in>"
+      explosion-chance: 0.0
+      mini-explosion-chance: 0.01
+      mini-explosion-min-height: 60
+      mini-explosion-max-height: 75
+      mini-explosion-min-radius: 5
+      mini-explosion-max-radius: 10
+      railways-can-end: true
+      railways-enabled-flag: false
+      railway-stations-enabled: false
+      highway-distance-mask: 0
+      ruin-chance: 0.7
+      ruin-minlevel-percent: 0.3
+      ruin-maxlevel-percent: 0.8
+      rubble-layer: false
+      citysphere-chance: 0.5
+      citysphere-clear-above: 30
+      city-chance: 0.9
+      city-min-radius: 50
+      city-max-radius: 65
+      city-threshold: 0.05
+      city-level0-height: 60
+      city-level1-height: 66
+      city-level2-height: 72
+      city-level3-height: 78
+      city-level4-height: 86
+      city-level5-height: 94
+      city-level6-height: 100
+      city-level7-height: 108
+      building-chance: 0.3
+      generate-lighting: true
+
+    cavern:
+      inherit: "default"
+      description: "This profile is meant for a cavern type world. There are lights in the building but the outside is very dark."
+      extra-description: "This is very hard. It's recommended you enable a bonus chest!"
+      warning: "Use this in combination with the Lost Worlds 'caves' world type"
+      icon: "textures/gui/icon_cavern.png"
+      landscape-type: "cavern"
+      horizon: 128
+      fog-red: 0.0
+      fog-green: 0.0
+      fog-blue: 0.0
+      fog-density: 0.02
+      explosion-chance: 0
+      mini-explosion-chance: 0
+      generate-lighting: true
+      railways-enabled-flag: false
+      ground-level: 40
+      sea-level: 32
+      city-level0-height: 44
+      city-level1-height: 52
+      city-level2-height: 60
+      city-level3-height: 68
+      city-level4-height: 76
+      city-level5-height: 82
+      city-level6-height: 90
+      city-level7-height: 98
+
+    nodamage:
+      inherit: "default"
+      description: "Like default but no explosion damage"
+      extra-description: "Ruins and rubble are disabled and ravines are disabled in cities"
+      icon: "textures/gui/icon_nodamage.png"
+      explosion-chance: 0
+      mini-explosion-chance: 0
+      ruin-chance: 0
+      rubble-layer: false

@@ -1,0 +1,41 @@
+{
+  "dimx": 5,
+  "dimz": 5,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_tower",
+      "pomkotsmechs:factory/factory_building_main"
+    ],
+    [
+      "pomkotsmechs:factory/factory_tower",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_chimney",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_building_main"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_tank_long",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_tank_long",
+      "pomkotsmechs:factory/factory_building_main"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_chimney",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_chimney",
+      "pomkotsmechs:factory/factory_building_main"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_tower",
+      "pomkotsmechs:factory/factory_building_main",
+      "pomkotsmechs:factory/factory_tower",
+      "pomkotsmechs:factory/factory_tank_long"
+    ]
+  ]
+}

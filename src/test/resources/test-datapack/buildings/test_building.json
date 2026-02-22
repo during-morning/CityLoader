@@ -1,0 +1,15 @@
+{
+  "id": "test_building",
+  "type": "residential",
+  "weight": 1.0,
+  "minFloors": 3,
+  "maxFloors": 5,
+  "parts": [
+    {
+      "partId": "test_floor",
+      "offsetX": 0,
+      "offsetY": 0,
+      "offsetZ": 0
+    }
+  ]
+}

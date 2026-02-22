@@ -1,0 +1,41 @@
+{
+  "dimx": 5,
+  "dimz": 5,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_cube00",
+      "pomkotsmechs:scattered/scattered_cube01",
+      "pomkotsmechs:scattered/scattered_cube02",
+      "pomkotsmechs:scattered/scattered_cube03",
+      "pomkotsmechs:scattered/scattered_cube04"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_cube10",
+      "pomkotsmechs:scattered/scattered_cube11",
+      "pomkotsmechs:scattered/scattered_cube12",
+      "pomkotsmechs:scattered/scattered_cube13",
+      "pomkotsmechs:scattered/scattered_cube14"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_cube20",
+      "pomkotsmechs:scattered/scattered_cube21",
+      "pomkotsmechs:scattered/scattered_cube22",
+      "pomkotsmechs:scattered/scattered_cube23",
+      "pomkotsmechs:scattered/scattered_cube24"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_cube30",
+      "pomkotsmechs:scattered/scattered_cube31",
+      "pomkotsmechs:scattered/scattered_cube32",
+      "pomkotsmechs:scattered/scattered_cube33",
+      "pomkotsmechs:scattered/scattered_cube34"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_cube40",
+      "pomkotsmechs:scattered/scattered_cube41",
+      "pomkotsmechs:scattered/scattered_cube42",
+      "pomkotsmechs:scattered/scattered_cube43",
+      "pomkotsmechs:scattered/scattered_cube44"
+    ]
+  ]
+}

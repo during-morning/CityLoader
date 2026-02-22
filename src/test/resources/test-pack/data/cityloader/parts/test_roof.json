@@ -1,0 +1,10 @@
+{
+    "description": "简单的屋顶部件（4x4石砖屋顶）",
+    "palette": "cityloader:test_stone",
+    "slices": [
+        "ssss",
+        "saaa",
+        "saaa",
+        "ssss"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": "wood_variant",
+    "description": "木材变体（不同木材类型）",
+    "blocks": [
+        {
+            "block": "minecraft:oak_planks",
+            "weight": 3
+        },
+        {
+            "block": "minecraft:spruce_planks",
+            "weight": 2
+        },
+        {
+            "block": "minecraft:birch_planks",
+            "weight": 2
+        },
+        {
+            "block": "minecraft:jungle_planks",
+            "weight": 1
+        }
+    ]
+}

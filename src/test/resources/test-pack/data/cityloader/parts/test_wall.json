@@ -1,0 +1,10 @@
+{
+    "description": "简单的墙壁部件（4x4砖块墙）",
+    "palette": "cityloader:test_brick",
+    "slices": [
+        "bbbb",
+        "bgbb",
+        "bgbb",
+        "bbbb"
+    ]
+}

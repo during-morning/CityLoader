@@ -1,0 +1,12 @@
+{
+  "dimx": 1,
+  "dimz": 4,
+  "buildings": [
+    [
+      "pomkotsmechs:base/base_missile_launcher_l",
+      "pomkotsmechs:base/base_missile_launcher_l",
+      "pomkotsmechs:base/base_missile_launcher_l",
+      "pomkotsmechs:base/base_missile_launcher_l"
+    ]
+  ]
+}

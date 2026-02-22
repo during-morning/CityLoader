@@ -1,0 +1,41 @@
+{
+  "dimx": 5,
+  "dimz": 5,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_garage00",
+      "pomkotsmechs:scattered/scattered_garage01",
+      "pomkotsmechs:scattered/scattered_garage02",
+      "pomkotsmechs:scattered/scattered_garage03",
+      "pomkotsmechs:scattered/scattered_garage04"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_garage10",
+      "pomkotsmechs:scattered/scattered_garage11",
+      "pomkotsmechs:scattered/scattered_garage12",
+      "pomkotsmechs:scattered/scattered_garage13",
+      "pomkotsmechs:scattered/scattered_garage14"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_garage20",
+      "pomkotsmechs:scattered/scattered_garage21",
+      "pomkotsmechs:scattered/scattered_garage22",
+      "pomkotsmechs:scattered/scattered_garage23",
+      "pomkotsmechs:scattered/scattered_garage24"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_garage30",
+      "pomkotsmechs:scattered/scattered_garage31",
+      "pomkotsmechs:scattered/scattered_garage32",
+      "pomkotsmechs:scattered/scattered_garage33",
+      "pomkotsmechs:scattered/scattered_garage34"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_garage40",
+      "pomkotsmechs:scattered/scattered_garage41",
+      "pomkotsmechs:scattered/scattered_garage42",
+      "pomkotsmechs:scattered/scattered_garage43",
+      "pomkotsmechs:scattered/scattered_garage44"
+    ]
+  ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": "test_simple_house",
+    "type": "residential",
+    "palette": "cityloader:test_brick",
+    "weight": 10.0,
+    "minfloors": 1,
+    "maxfloors": 3,
+    "parts": [
+        {
+            "part": "cityloader:test_floor",
+            "level": "ground"
+        },
+        {
+            "part": "cityloader:test_wall",
+            "level": "floor"
+        },
+        {
+            "part": "cityloader:test_roof",
+            "level": "top"
+        }
+    ]
+}

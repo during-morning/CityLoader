@@ -1,0 +1,24 @@
+{
+  "filler": "#",
+  "rubble": "}",
+  "allowDoors": false,
+  "maxcellars": 0,
+  "minfloors": 3,
+  "maxfloors": 3,
+  "parts": [
+    {
+      "floor": 0,
+      "top": false,
+      "part": "pomkotsmechs:base/base_ground_empty_0"
+    },
+    {
+      "range": "1,100",
+      "top": false,
+      "part": "pomkotsmechs:common_empty"
+    },
+    {
+      "top": true,
+      "part": "pomkotsmechs:common_empty"
+    }
+  ]
+}

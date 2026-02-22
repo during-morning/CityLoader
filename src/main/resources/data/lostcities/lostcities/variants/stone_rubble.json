@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    {
+      "random": 40,
+      "block": "minecraft:stone"
+    },
+    {
+      "random": 40,
+      "block": "minecraft:stone_stairs"
+    },
+    {
+      "random": 40,
+      "block": "minecraft:stone_slab"
+    },
+    {
+      "random": 1000,
+      "block": "minecraft:air"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "description": "测试用基础砖块调色板",
+  "mappings": {
+    "b": "minecraft:bricks",
+    "B": "minecraft:brick_stairs",
+    "s": "minecraft:stone_bricks",
+    "S": "minecraft:stone_brick_stairs",
+    "g": "minecraft:glass",
+    "w": "minecraft:oak_planks",
+    "d": "minecraft:oak_door",
+    "a": "minecraft:air"
+  }
+}

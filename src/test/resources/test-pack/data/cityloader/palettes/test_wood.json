@@ -1,0 +1,12 @@
+{
+    "description": "测试用木质调色板（带变体）",
+    "mappings": {
+        "w": "minecraft:oak_planks",
+        "W": "@wood_variant",
+        "p": "minecraft:oak_stairs",
+        "f": "minecraft:oak_fence",
+        "g": "minecraft:glass_pane",
+        "d": "minecraft:oak_door",
+        "a": "minecraft:air"
+    }
+}

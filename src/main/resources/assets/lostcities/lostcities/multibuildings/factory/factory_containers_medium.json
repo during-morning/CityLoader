@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_containers_medium00",
+      "pomkotsmechs:factory/factory_containers_medium01",
+      "pomkotsmechs:factory/factory_containers_medium02"
+    ],
+    [
+      "pomkotsmechs:factory/factory_containers_medium10",
+      "pomkotsmechs:factory/factory_containers_medium11",
+      "pomkotsmechs:factory/factory_containers_medium12"
+    ],
+    [
+      "pomkotsmechs:factory/factory_containers_medium20",
+      "pomkotsmechs:factory/factory_containers_medium21",
+      "pomkotsmechs:factory/factory_containers_medium22"
+    ]
+  ]
+}

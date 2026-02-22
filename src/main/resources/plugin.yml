@@ -1,0 +1,37 @@
+# CityLoader插件配置文件
+name: CityLoader
+version: ${project.version}
+main: com.during.cityloader.CityLoaderPlugin
+api-version: '1.21'
+load: STARTUP
+authors: [During]
+description: 季节性城市生成器 - Lost Cities风格的Paper插件
+website: https://github.com/during/cityloader
+softdepend: [RealisticSeasons]
+
+# 命令定义
+commands:
+  cityloader:
+    description: CityLoader主命令
+    usage: /cityloader <reload|version|info|generate>
+    aliases: [cl, city]
+    permission: cityloader.admin
+    permission-message: §c你没有权限使用此命令
+
+# 权限定义
+permissions:
+  cityloader.admin:
+    description: CityLoader管理员权限
+    default: op
+  cityloader.reload:
+    description: 重载配置和资源的权限
+    default: op
+  cityloader.version:
+    description: 查看版本信息的权限
+    default: op
+  cityloader.info:
+    description: 查看插件信息的权限
+    default: op
+  cityloader.generate:
+    description: 手动生成城市的权限
+    default: op

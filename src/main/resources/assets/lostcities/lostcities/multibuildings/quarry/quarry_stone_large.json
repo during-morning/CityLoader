@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:quarry/quarry_stone_large00",
+      "pomkotsmechs:quarry/quarry_stone_large01",
+      "pomkotsmechs:quarry/quarry_stone_large02"
+    ],
+    [
+      "pomkotsmechs:quarry/quarry_stone_large10",
+      "pomkotsmechs:quarry/quarry_stone_large11",
+      "pomkotsmechs:quarry/quarry_stone_large12"
+    ],
+    [
+      "pomkotsmechs:quarry/quarry_stone_large20",
+      "pomkotsmechs:quarry/quarry_stone_large21",
+      "pomkotsmechs:quarry/quarry_stone_large22"
+    ]
+  ]
+}

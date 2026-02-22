@@ -1,0 +1,56 @@
+{
+  "dimx": 5,
+  "dimz": 8,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_hanger00",
+      "pomkotsmechs:scattered/scattered_hanger01",
+      "pomkotsmechs:scattered/scattered_hanger02",
+      "pomkotsmechs:scattered/scattered_hanger03",
+      "pomkotsmechs:scattered/scattered_hanger04",
+      "pomkotsmechs:scattered/scattered_hanger05",
+      "pomkotsmechs:scattered/scattered_hanger06",
+      "pomkotsmechs:scattered/scattered_hanger07"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_hanger10",
+      "pomkotsmechs:scattered/scattered_hanger11",
+      "pomkotsmechs:scattered/scattered_hanger12",
+      "pomkotsmechs:scattered/scattered_hanger13",
+      "pomkotsmechs:scattered/scattered_hanger14",
+      "pomkotsmechs:scattered/scattered_hanger15",
+      "pomkotsmechs:scattered/scattered_hanger16",
+      "pomkotsmechs:scattered/scattered_hanger17"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_hanger20",
+      "pomkotsmechs:scattered/scattered_hanger21",
+      "pomkotsmechs:scattered/scattered_hanger22",
+      "pomkotsmechs:scattered/scattered_hanger23",
+      "pomkotsmechs:scattered/scattered_hanger24",
+      "pomkotsmechs:scattered/scattered_hanger25",
+      "pomkotsmechs:scattered/scattered_hanger26",
+      "pomkotsmechs:scattered/scattered_hanger27"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_hanger30",
+      "pomkotsmechs:scattered/scattered_hanger31",
+      "pomkotsmechs:scattered/scattered_hanger32",
+      "pomkotsmechs:scattered/scattered_hanger33",
+      "pomkotsmechs:scattered/scattered_hanger34",
+      "pomkotsmechs:scattered/scattered_hanger35",
+      "pomkotsmechs:scattered/scattered_hanger36",
+      "pomkotsmechs:scattered/scattered_hanger37"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_hanger40",
+      "pomkotsmechs:scattered/scattered_hanger41",
+      "pomkotsmechs:scattered/scattered_hanger42",
+      "pomkotsmechs:scattered/scattered_hanger43",
+      "pomkotsmechs:scattered/scattered_hanger44",
+      "pomkotsmechs:scattered/scattered_hanger45",
+      "pomkotsmechs:scattered/scattered_hanger46",
+      "pomkotsmechs:scattered/scattered_hanger47"
+    ]
+  ]
+}

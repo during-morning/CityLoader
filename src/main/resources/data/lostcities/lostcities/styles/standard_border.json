@@ -1,0 +1,38 @@
+{
+  "randompalettes": [
+    [
+      {
+        "factor": 1.0,
+        "palette": "common"
+      }
+    ],
+    [
+      {
+        "factor": 1.0,
+        "palette": "default"
+      }
+    ],
+    [
+      {
+        "factor": 1.0,
+        "palette": "stone_building"
+      },
+      {
+        "factor": 1.0,
+        "palette": "bricks_building"
+      }
+    ],
+    [
+      {
+        "factor": 1.0,
+        "palette": "glass_full"
+      }
+    ],
+    [
+      {
+        "factor": 1.0,
+        "palette": "glass_quartz"
+      }
+    ]
+  ]
+}

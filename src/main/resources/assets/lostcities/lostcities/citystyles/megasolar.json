@@ -1,0 +1,127 @@
+{
+  "inherit": "citystyle_config",
+  "style": "pomkotsmechs:weathered",
+  "streetblocks": {
+    "border": "y",
+    "wall": "w",
+    "street": "S",
+    "streetbase": "b",
+    "streetvariant": "B",
+    "width": 16,
+    "parts": {
+      "full": "pomkotsmechs:common/street_full",
+      "straight": "pomkotsmechs:common/street_straight",
+      "end": "pomkotsmechs:common/street_end",
+      "bend": "pomkotsmechs:common/street_bend",
+      "t": "pomkotsmechs:common/street_t",
+      "none": "pomkotsmechs:common/street_none",
+      "all": "pomkotsmechs:common/street_all"
+    }
+  },
+  "parkblocks": {
+    "elevation": "x",
+    "parkelevation": false
+  },
+  "corridorblocks": {
+    "roof": "x",
+    "glass": "+"
+  },
+  "railblocks": {
+    "railmain": "~"
+  },
+  "sphereblocks": {
+    "glass": "Z",
+    "border": "9",
+    "inner": "b"
+  },
+  "selectors": {
+    "buildings": [
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:megasolar/megasolar_cell"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:megasolar/megasolar_tank"
+      },
+      {
+        "factor": 0.01,
+        "value": "pomkotsmechs:base/base_control_tower"
+      }
+    ],
+    "multibuildings": [
+      {
+        "factor": 0.3,
+        "value": "pomkotsmechs:megasolar/megasolar_cell_medium"
+      },
+      {
+        "factor": 0.3,
+        "value": "pomkotsmechs:megasolar/megasolar_cell_huge"
+      },
+      {
+        "factor": 0.03,
+        "value": "pomkotsmechs:megasolar/megasolar_reactor"
+      }
+    ],
+    "bridges": [
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_open"
+      },
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_covered"
+      }
+    ],
+    "fronts": [
+    ],
+    "stairs": [
+      {
+        "factor": 1.0,
+        "value": "stairs1"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairs2"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairsnormal"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairsbig"
+      }
+    ],
+    "fountains": [
+    ],
+    "parks": [
+      {
+        "factor": 1.0,
+        "value": "park_pool"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_plants"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_trees"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_plants_pillars"
+      }
+    ],
+    "raildungeons": [
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon1"
+      },
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon2"
+      }
+    ]
+  }
+}

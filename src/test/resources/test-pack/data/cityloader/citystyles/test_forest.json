@@ -1,0 +1,12 @@
+{
+    "id": "test_forest",
+    "description": "森林风格 - 使用木板作为街道",
+    "streetblocks": {
+        "base": "minecraft:oak_planks",
+        "edge": "minecraft:oak_log"
+    },
+    "parkblocks": {
+        "base": "minecraft:grass_block",
+        "decoration": "minecraft:oak_sapling"
+    }
+}

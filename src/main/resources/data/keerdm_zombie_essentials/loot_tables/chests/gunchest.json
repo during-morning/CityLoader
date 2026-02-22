@@ -1,0 +1,909 @@
+{
+  "pools": [
+    {
+      "name": "keerdm_zombie_essentials:gunchest",
+      "rolls": {
+        "min": 2,
+        "max": 8
+      },
+      "entries": [
+        {
+          "type": "item",
+          "name": "pointblank:glock17",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 200.00
+        },
+        {
+          "type": "item",
+          "name": "pointblank:glock18",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 189.05
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m1911a1",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 178.70
+        },
+        {
+          "type": "item",
+          "name": "pointblank:tti_viper",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 168.90
+        },
+        {
+          "type": "item",
+          "name": "pointblank:p30l",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 159.63
+        },
+        {
+          "type": "item",
+          "name": "pointblank:mk23",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 150.86
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m9",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 142.58
+        },
+        {
+          "type": "item",
+          "name": "pointblank:deserteagle",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 134.77
+        },
+        {
+          "type": "item",
+          "name": "pointblank:rhino",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 127.42
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m4a1",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 120.51
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m4a1mod1",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 114.01
+        },
+        {
+          "type": "item",
+          "name": "pointblank:star15",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 107.91
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m4sopmodii",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 102.19
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m16a1",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 96.83
+        },
+        {
+          "type": "item",
+          "name": "pointblank:hk416",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 91.81
+        },
+        {
+          "type": "item",
+          "name": "pointblank:scarl",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 87.11
+        },
+        {
+          "type": "item",
+          "name": "pointblank:xm7",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 82.73
+        },
+        {
+          "type": "item",
+          "name": "pointblank:g36c",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 78.65
+        },
+        {
+          "type": "item",
+          "name": "pointblank:g36k",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 74.86
+        },
+        {
+          "type": "item",
+          "name": "pointblank:aug",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 71.36
+        },
+        {
+          "type": "item",
+          "name": "pointblank:g41",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 68.13
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ak47",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 65.18
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ak74",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 62.48
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ak12",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 60.03
+        },
+        {
+          "type": "item",
+          "name": "pointblank:an94",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 57.81
+        },
+        {
+          "type": "item",
+          "name": "pointblank:xm29",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 55.81
+        },
+        {
+          "type": "item",
+          "name": "pointblank:mp5",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 53.99
+        },
+        {
+          "type": "item",
+          "name": "pointblank:mp7",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 52.33
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ump45",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 50.80
+        },
+        {
+          "type": "item",
+          "name": "pointblank:vector",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 49.38
+        },
+        {
+          "type": "item",
+          "name": "pointblank:p90",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 48.06
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ro635",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 46.83
+        },
+        {
+          "type": "item",
+          "name": "pointblank:tmp",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 45.67
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m950",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 44.58
+        },
+        {
+          "type": "item",
+          "name": "pointblank:sl8",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 43.56
+        },
+        {
+          "type": "item",
+          "name": "pointblank:uar10",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 42.59
+        },
+        {
+          "type": "item",
+          "name": "pointblank:wa2000",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 41.67
+        },
+        {
+          "type": "item",
+          "name": "pointblank:xm3",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 40.79
+        },
+        {
+          "type": "item",
+          "name": "pointblank:c14",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 39.95
+        },
+        {
+          "type": "item",
+          "name": "pointblank:l96a1",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 39.14
+        },
+        {
+          "type": "item",
+          "name": "pointblank:ballista",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 38.36
+        },
+        {
+          "type": "item",
+          "name": "pointblank:gm6lynx",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 37.61
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m590",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 36.89
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m870",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 36.19
+        },
+        {
+          "type": "item",
+          "name": "pointblank:spas12",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 35.51
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m1014",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 34.86
+        },
+        {
+          "type": "item",
+          "name": "pointblank:aa12",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 34.23
+        },
+        {
+          "type": "item",
+          "name": "pointblank:aughbar",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 33.62
+        },
+        {
+          "type": "item",
+          "name": "pointblank:lamg",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 33.04
+        },
+        {
+          "type": "item",
+          "name": "pointblank:mk48",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 32.48
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m249",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 31.95
+        },
+        {
+          "type": "item",
+          "name": "pointblank:mk14ebr",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 31.44
+        },
+        {
+          "type": "item",
+          "name": "pointblank:citoricxs",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 30.95
+        },
+        {
+          "type": "item",
+          "name": "pointblank:hs12",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 30.48
+        },
+        {
+          "type": "item",
+          "name": "pointblank:smaw",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 30.02
+        },
+        {
+          "type": "item",
+          "name": "pointblank:javelin",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 29.58
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m32mgl",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 29.15
+        },
+        {
+          "type": "item",
+          "name": "pointblank:m134minigun",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 28.74
+        },
+        {
+          "type": "item",
+          "name": "pointblank:at4",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            }
+          ],
+          "weight": 28.34
+        },
+        {
+          "type": "item",
+          "name": "minecraft:rotten_flesh",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 4,
+                "max": 12
+              }
+            }
+          ],
+          "weight": 12000
+        },
+        {
+          "type": "item",
+          "name": "minecraft:gunpowder",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 10
+              }
+            }
+          ],
+          "weight": 6400
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_ingot",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 6
+              }
+            }
+          ],
+          "weight": 4000
+        },
+        {
+          "type": "item",
+          "name": "minecraft:glowstone_dust",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1600
+        },
+        {
+          "type": "item",
+          "name": "minecraft:diamond",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ],
+          "weight": 200
+        }
+      ]
+    }
+  ]
+}

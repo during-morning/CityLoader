@@ -1,0 +1,36 @@
+{
+  "blocks": [
+    {
+      "random": 26,
+      "block": "minecraft:cobblestone_wall"
+	},
+    {
+      "random": 23,
+      "block": "minecraft:mossy_cobblestone_wall"
+    },
+    {
+      "random": 11,
+      "block": "immersive_weathering:cracked_stone_brick_wall"
+	},
+    {
+      "random": 18,
+      "block": "immersive_weathering:stone_wall"
+    },
+    {
+      "random": 22,
+      "block": "immersive_weathering:mossy_stone_wall"
+	},
+    {
+      "random": 18,
+      "block": "minecraft:stone_brick_wall"
+    },
+    {
+      "random": 2,
+      "block": "minecraft:air"
+	},
+    {
+      "random": 1000,
+      "block": "minecraft:mossy_cobblestone_wall"
+    }
+  ]
+}

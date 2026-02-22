@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:base/base_container00",
+      "pomkotsmechs:base/base_container01",
+      "pomkotsmechs:base/base_container02"
+    ],
+    [
+      "pomkotsmechs:base/base_container10",
+      "pomkotsmechs:base/base_container11",
+      "pomkotsmechs:base/base_container12"
+    ],
+    [
+      "pomkotsmechs:base/base_container20",
+      "pomkotsmechs:base/base_container21",
+      "pomkotsmechs:base/base_container22"
+    ]
+  ]
+}

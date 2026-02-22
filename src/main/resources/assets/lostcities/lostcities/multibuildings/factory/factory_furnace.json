@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_furnace00",
+      "pomkotsmechs:factory/factory_furnace01",
+      "pomkotsmechs:factory/factory_furnace02"
+    ],
+    [
+      "pomkotsmechs:factory/factory_furnace10",
+      "pomkotsmechs:factory/factory_furnace11",
+      "pomkotsmechs:factory/factory_furnace12"
+    ],
+    [
+      "pomkotsmechs:factory/factory_furnace20",
+      "pomkotsmechs:factory/factory_furnace21",
+      "pomkotsmechs:factory/factory_furnace22"
+    ]
+  ]
+}

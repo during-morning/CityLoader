@@ -1,0 +1,12 @@
+{
+    "id": "test_snow",
+    "description": "雪地风格 - 使用雪砖作为街道",
+    "streetblocks": {
+        "base": "minecraft:snow_block",
+        "edge": "minecraft:packed_ice"
+    },
+    "parkblocks": {
+        "base": "minecraft:snow_block",
+        "decoration": "minecraft:spruce_sapling"
+    }
+}

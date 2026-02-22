@@ -1,0 +1,14 @@
+{
+  "dimx": 2,
+  "dimz": 2,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_radiotower00",
+      "pomkotsmechs:scattered/scattered_radiotower01"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_radiotower10",
+      "pomkotsmechs:scattered/scattered_radiotower11"
+    ]
+  ]
+}

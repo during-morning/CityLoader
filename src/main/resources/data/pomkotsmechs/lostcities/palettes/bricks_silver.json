@@ -1,0 +1,24 @@
+{
+  "palette": [
+    {
+      "char": "X",
+      "variant": "pomkotsmechs:brownlightblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "$",
+      "variant": "pomkotsmechs:brownblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "#",
+      "variant": "pomkotsmechs:brownlightblock",
+      "damaged": "minecraft:iron_bars"
+    },
+    {
+      "char": "}",
+      "variant": "pomkotsmechs:brownlightblock",
+      "damaged": "minecraft:iron_bars"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "filler": "#",
+  "rubble": "}",
+  "allowDoors": false,
+  "allowFillers": false,
+  "minfloors": 1,
+  "maxfloors": 1,
+  "maxcellars": 3,
+  "mincellars": 3,
+  "parts": [
+    {
+      "floor": -3,
+      "cellar": true,
+      "top": false,
+      "part": "pomkotsmechs:common_water"
+    },
+    {
+      "floor": -2,
+      "cellar": true,
+      "top": false,
+      "part": "pomkotsmechs:port/port_tanker_small24_0"
+    },
+    {
+      "floor": -1,
+      "cellar": true,
+      "top": false,
+      "part": "pomkotsmechs:port/port_tanker_small24_1"
+    },
+    {
+      "floor": 0,
+      "cellar": false,
+      "top": false,
+      "part": "pomkotsmechs:port/port_tanker_small24_2"
+    },
+    {
+      "floor": 1,
+      "cellar": false,
+      "top": true,
+      "part": "pomkotsmechs:port/port_tanker_small24_3"
+    }
+  ]
+}

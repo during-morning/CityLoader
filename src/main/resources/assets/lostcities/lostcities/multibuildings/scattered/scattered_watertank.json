@@ -1,0 +1,14 @@
+{
+  "dimx": 2,
+  "dimz": 2,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_watertank00",
+      "pomkotsmechs:scattered/scattered_watertank01"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_watertank10",
+      "pomkotsmechs:scattered/scattered_watertank11"
+    ]
+  ]
+}

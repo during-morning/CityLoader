@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:scattered/scattered_container00",
+      "pomkotsmechs:scattered/scattered_container01",
+      "pomkotsmechs:scattered/scattered_container02"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_container10",
+      "pomkotsmechs:scattered/scattered_container11",
+      "pomkotsmechs:scattered/scattered_container12"
+    ],
+    [
+      "pomkotsmechs:scattered/scattered_container20",
+      "pomkotsmechs:scattered/scattered_container21",
+      "pomkotsmechs:scattered/scattered_container22"
+    ]
+  ]
+}

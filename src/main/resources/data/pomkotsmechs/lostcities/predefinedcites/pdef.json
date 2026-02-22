@@ -1,0 +1,29 @@
+{
+  "citystyle": "standard",
+  "dimension": "minecraft:overworld",
+  "chunkx": 50,
+  "chunkz": 50,
+  "radius": 50,
+  "buildings": [
+    {
+      "building": "cabin",
+      "chunkx": 0,
+      "chunkz": 0
+    },
+    {
+      "building": "cabin",
+      "chunkx": 1,
+      "chunkz": 0
+    },
+    {
+      "building": "cabin",
+      "chunkx": 0,
+      "chunkz": 1
+    },
+    {
+      "building": "cabin",
+      "chunkx": 1,
+      "chunkz": 1
+    }
+  ]
+}

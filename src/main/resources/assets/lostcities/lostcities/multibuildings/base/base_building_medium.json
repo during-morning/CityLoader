@@ -1,0 +1,61 @@
+{
+  "dimx": 5,
+  "dimz": 9,
+  "buildings": [
+    [
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_east",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_east",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_east",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_east",
+      "pomkotsmechs:base/base_building_main_empty"
+    ],
+    [
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_wall",
+      "pomkotsmechs:base/base_building_body00",
+      "pomkotsmechs:base/base_building_body01",
+      "pomkotsmechs:base/base_building_body01",
+      "pomkotsmechs:base/base_building_body01",
+      "pomkotsmechs:base/base_building_body02",
+      "pomkotsmechs:base/base_building_wall",
+      "pomkotsmechs:base/base_building_main_empty"
+    ],
+    [
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_body10",
+      "pomkotsmechs:base/base_building_body11",
+      "pomkotsmechs:base/base_building_body11",
+      "pomkotsmechs:base/base_building_body11",
+      "pomkotsmechs:base/base_building_body12",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_main_empty"
+    ],
+    [
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_wall",
+      "pomkotsmechs:base/base_building_body20",
+      "pomkotsmechs:base/base_building_body21",
+      "pomkotsmechs:base/base_building_body21",
+      "pomkotsmechs:base/base_building_body21",
+      "pomkotsmechs:base/base_building_body22",
+      "pomkotsmechs:base/base_building_wall",
+      "pomkotsmechs:base/base_building_main_empty"
+    ],
+    [
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_west",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_west",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_west",
+      "pomkotsmechs:base/base_building_main_empty",
+      "pomkotsmechs:base/base_building_pillar_diagonal_west",
+      "pomkotsmechs:base/base_building_main_empty"
+    ]
+  ]
+}

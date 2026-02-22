@@ -1,0 +1,154 @@
+{
+  "inherit": "citystyle_config",
+  "style": "pomkotsmechs:weathered_quarry",
+  "explosionchance": 0,
+  "buildingsettings": {
+    "minfloors": 0,
+    "mincellars": 0,
+    "maxcellars": 0,
+    "buildingchance": 0.1
+  },
+  "streetblocks": {
+    "border": "Z",
+    "wall": "Z",
+    "street": "Z",
+    "streetbase": "Z",
+    "streetvariant": "Z",
+    "width": 16,
+    "parts": {
+      "full": "pomkotsmechs:common_void",
+      "straight": "pomkotsmechs:common_void",
+      "end": "pomkotsmechs:common_void",
+      "bend": "pomkotsmechs:common_void",
+      "t": "pomkotsmechs:common_void",
+      "none": "pomkotsmechs:common_void",
+      "all": "pomkotsmechs:common_void"
+    }
+  },
+  "parkblocks": {
+    "parkelevation": false,
+    "elevation": "Z"
+  },
+  "corridorblocks": {
+    "roof": "d",
+    "glass": "+"
+  },
+  "railblocks": {
+    "railmain": "Z"
+  },
+  "sphereblocks": {
+    "glass": "Z",
+    "border": "Z",
+    "inner": "Z"
+  },
+  "selectors": {
+    "buildings": [
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_bulldozer_n"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_bulldozer_e"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_bulldozer_s"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_bulldozer_w"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_excavator_n"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_excavator_e"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_excavator_s"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_excavator_w"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:quarry/quarry_stone_small"
+      },
+      {
+        "factor": 0.03,
+        "value": "pomkotsmechs:quarry/quarry_cargo_a"
+      },
+      {
+        "factor": 0.03,
+        "value": "pomkotsmechs:quarry/quarry_cargo_b"
+      }
+    ],
+    "multibuildings": [
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_dump_n"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_dump_e"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_dump_s"
+      },
+      {
+        "factor": 0.025,
+        "value": "pomkotsmechs:quarry/quarry_dump_w"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:quarry/quarry_mega_machine"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:quarry/quarry_office"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:quarry/quarry_stone_middle"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:quarry/quarry_stone_large"
+      }
+    ],
+    "bridges": [
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_open"
+      },
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_covered"
+      }
+    ],
+    "fronts": [
+    ],
+    "stairs": [
+    ],
+    "fountains": [
+    ],
+    "parks": [
+    ],
+    "raildungeons": [
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon1"
+      },
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "palette": [
+      {
+      "char": "X",
+      "block": "minecraft:stone",
+      "damaged": "immersive_weathering:exposed_iron_bars"
+	},
+    {
+	  "char": "$",
+      "block": "minecraft:stone_slab[type=double]",
+      "damaged": "immersive_weathering:exposed_iron_bars"
+    },
+    {
+	  "char": "#",
+      "blocks": [
+        {
+          "random": 15,
+          "block": "minecraft:stone",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+        },
+        {
+          "random": 10,
+          "block": "immersive_weathering:mossy_stone_slab",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+        },
+        {
+          "random": 10,
+          "block": "minecraft:stone_stairs",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+        },
+        { 
+          "random": 30,
+          "block": "immersive_weathering:mossy_stone",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+        },
+        {
+          "random": 30,
+          "block": "minecraft:cracked_stone_bricks",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+        },
+        {
+		  "random": 15,
+          "block": "minecraft:moss_block",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+		},
+        {
+          "random": 3,
+          "block": "immersive_weathering:exposed_iron_bars",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+		},
+        {
+          "random": 1000,
+          "block": "minecraft:moss_block",
+		  "damaged": "immersive_weathering:exposed_iron_bars"
+	    }
+      ]
+    }
+  ]
+}

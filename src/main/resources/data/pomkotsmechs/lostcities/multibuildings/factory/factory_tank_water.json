@@ -1,0 +1,14 @@
+{
+  "dimx": 2,
+  "dimz": 2,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_tank_water00",
+      "pomkotsmechs:factory/factory_tank_water01"
+    ],
+    [
+      "pomkotsmechs:factory/factory_tank_water10",
+      "pomkotsmechs:factory/factory_tank_water11"
+    ]
+  ]
+}

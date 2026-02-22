@@ -1,0 +1,28 @@
+{
+  "blocks": [
+    {
+      "random": 32,
+      "block": "minecraft:deepslate"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:cobbled_deepslate"
+    },
+    {
+      "random": 32,
+      "block": "minecraft:cyan_terracotta"
+	},
+    {
+      "random": 12,
+      "block": "minecraft:basalt[axis=x]"
+    },
+    {
+      "random": 3,
+      "block": "minecraft:moss_block"
+	},
+    {
+      "random": 17,
+      "block": "minecraft:blackstone"
+    }
+  ]
+}

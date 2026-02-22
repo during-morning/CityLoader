@@ -1,0 +1,202 @@
+{
+  "inherit": "citystyle_config",
+  "style": "pomkotsmechs:weathered",
+  "explosionchance": 0,
+  "buildingsettings": {
+    "maxfloors": 14
+  },
+  "streetblocks": {
+    "border": "y",
+    "wall": "w",
+    "street": "S",
+    "streetbase": "b",
+    "streetvariant": "B",
+    "width": 16,
+    "parts": {
+      "full": "pomkotsmechs:common/street_full",
+      "straight": "pomkotsmechs:common/street_straight",
+      "end": "pomkotsmechs:common/street_end",
+      "bend": "pomkotsmechs:common/street_bend",
+      "t": "pomkotsmechs:common/street_t",
+      "none": "pomkotsmechs:common/street_none",
+      "all": "pomkotsmechs:common/street_all"
+    }
+  },
+  "parkblocks": {
+    "elevation": "x"
+  },
+  "corridorblocks": {
+    "roof": "x",
+    "glass": "+"
+  },
+  "railblocks": {
+    "railmain": "~"
+  },
+  "sphereblocks": {
+    "glass": "Z",
+    "border": "9",
+    "inner": "b"
+  },
+  "selectors": {
+    "buildings": [
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_cargo_a"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_cargo_b"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_tank_a"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_tank_b"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_storage_rack"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_lookout_tower"
+      },
+      {
+        "factor": 0.03,
+        "value": "pomkotsmechs:base/base_tarret"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_control_tower"
+      },
+      {
+        "factor": 0.2,
+        "value": "pomkotsmechs:base/base_ground_empty"
+      }
+    ],
+    "multibuildings": [
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_hanger"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_building_medium"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_missile_large_multi"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_missile_launcher_l"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_missile_launcher_m"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_space_shuttle"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_container"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_ground_airvent"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_aircraft_hanger"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_aircraft_ground"
+      },
+      {
+        "factor": 0.05,
+        "value": "pomkotsmechs:base/base_aircraft_ground_heri"
+      },
+      {
+        "factor": 0.3,
+        "value": "pomkotsmechs:base/base_ground_ns"
+      },
+      {
+        "factor": 0.3,
+        "value": "pomkotsmechs:base/base_ground_ew"
+      }
+    ],
+    "bridges": [
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_open"
+      },
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_covered"
+      }
+    ],
+    "fronts": [
+    ],
+    "stairs": [
+      {
+        "factor": 1.0,
+        "value": "stairs1"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairs2"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairsnormal"
+      },
+      {
+        "factor": 1.0,
+        "value": "stairsbig"
+      }
+    ],
+    "fountains": [
+    ],
+    "parks": [
+      {
+        "factor": 1.0,
+        "value": "park_pool"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_plants"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_trees"
+      },
+      {
+        "factor": 1.0,
+        "value": "park_plants_pillars"
+      },
+      {
+        "factor": 0.3,
+        "value": "park_building"
+      },
+      {
+        "factor": 0.3,
+        "value": "park_building2"
+      }
+    ],
+    "raildungeons": [
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon1"
+      },
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon2"
+      }
+    ]
+  }
+}

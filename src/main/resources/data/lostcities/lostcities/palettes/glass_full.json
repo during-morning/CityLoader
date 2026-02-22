@@ -1,0 +1,29 @@
+{
+  "palette": [
+    {
+      "char": "+",
+      "block": "minecraft:white_stained_glass_pane"
+    },
+    {
+	  "char": "a",
+      "blocks": [
+        {
+          "random": 80,
+          "block": "minecraft:white_stained_glass_pane"
+        },
+        {
+          "random": 15,
+          "block": "minecraft:air"  
+		},
+        {
+          "random": 1000,
+          "block": "minecraft:air"
+	    }
+      ]
+    },
+    {
+      "char": "`",
+      "block": "minecraft:glass_pane"
+    }
+  ]
+}

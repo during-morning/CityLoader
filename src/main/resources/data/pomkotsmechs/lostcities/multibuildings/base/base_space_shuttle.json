@@ -1,0 +1,24 @@
+{
+  "dimx": 3,
+  "dimz": 4,
+  "buildings": [
+    [
+      "pomkotsmechs:base/base_space_shuttle00",
+      "pomkotsmechs:base/base_space_shuttle01",
+      "pomkotsmechs:base/base_space_shuttle02",
+      "pomkotsmechs:base/base_space_shuttle03"
+    ],
+    [
+      "pomkotsmechs:base/base_space_shuttle10",
+      "pomkotsmechs:base/base_space_shuttle11",
+      "pomkotsmechs:base/base_space_shuttle12",
+      "pomkotsmechs:base/base_space_shuttle13"
+    ],
+    [
+      "pomkotsmechs:base/base_space_shuttle20",
+      "pomkotsmechs:base/base_space_shuttle21",
+      "pomkotsmechs:base/base_space_shuttle22",
+      "pomkotsmechs:base/base_space_shuttle23"
+    ]
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "multibuilding": "pomkotsmechs:ships/ships_warship",
+  "terrainheight": "ocean",
+  "terrainfix": "repeatslice",
+  "heightoffset": -5
+}

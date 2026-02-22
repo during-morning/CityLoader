@@ -1,0 +1,14 @@
+{
+  "dimx": 2,
+  "dimz": 2,
+  "buildings": [
+    [
+      "pomkotsmechs:base/base_aircraft_ground_heri00",
+      "pomkotsmechs:base/base_aircraft_ground_heri01"
+    ],
+    [
+      "pomkotsmechs:base/base_aircraft_ground_heri10",
+      "pomkotsmechs:base/base_aircraft_ground_heri11"
+    ]
+  ]
+}

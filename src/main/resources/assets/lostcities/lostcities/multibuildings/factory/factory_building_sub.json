@@ -1,0 +1,30 @@
+{
+  "dimx": 3,
+  "dimz": 6,
+  "buildings": [
+    [
+      "pomkotsmechs:factory/factory_building_sub00",
+      "pomkotsmechs:factory/factory_building_sub01",
+      "pomkotsmechs:factory/factory_building_sub02",
+      "pomkotsmechs:factory/factory_building_sub03",
+      "pomkotsmechs:factory/factory_building_sub04",
+      "pomkotsmechs:factory/factory_building_sub05"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_sub10",
+      "pomkotsmechs:factory/factory_building_sub11",
+      "pomkotsmechs:factory/factory_building_sub12",
+      "pomkotsmechs:factory/factory_building_sub13",
+      "pomkotsmechs:factory/factory_building_sub14",
+      "pomkotsmechs:factory/factory_building_sub15"
+    ],
+    [
+      "pomkotsmechs:factory/factory_building_sub20",
+      "pomkotsmechs:factory/factory_building_sub21",
+      "pomkotsmechs:factory/factory_building_sub22",
+      "pomkotsmechs:factory/factory_building_sub23",
+      "pomkotsmechs:factory/factory_building_sub24",
+      "pomkotsmechs:factory/factory_building_sub25"
+    ]
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "dimx": 3,
+  "dimz": 3,
+  "buildings": [
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ],
+    [
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell",
+      "pomkotsmechs:megasolar/megasolar_cell"
+    ]
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "inherit": "citystyle_config",
+  "style": "pomkotsmechs:weathered",
+  "explosionchance": 0,
+  "buildingsettings": {
+    "minfloors": 0,
+    "mincellars": 0,
+    "maxcellars": 3,
+    "buildingchance": 0.3
+  },
+  "streetblocks": {
+    "border": "y",
+    "wall": "w",
+    "street": "S",
+    "streetbase": "b",
+    "streetvariant": "B",
+    "width": 16,
+    "parts": {
+      "full": "pomkotsmechs:common/street_full",
+      "straight": "pomkotsmechs:common/street_straight",
+      "end": "pomkotsmechs:common/street_end",
+      "bend": "pomkotsmechs:common/street_bend",
+      "t": "pomkotsmechs:common/street_t",
+      "none": "pomkotsmechs:common/street_none",
+      "all": "pomkotsmechs:common/street_all"
+    }
+  },
+  "parkblocks": {
+    "parkelevation": false,
+    "elevation": "x"
+  },
+  "corridorblocks": {
+    "roof": "x",
+    "glass": "+"
+  },
+  "railblocks": {
+    "railmain": "~"
+  },
+  "sphereblocks": {
+    "glass": "Z",
+    "border": "9",
+    "inner": "b"
+  },
+  "selectors": {
+    "buildings": [
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_cargo_a"
+      },
+      {
+        "factor": 0.1,
+        "value": "pomkotsmechs:base/base_cargo_b"
+      }
+    ],
+    "multibuildings": [
+      {
+        "factor": 1,
+        "value": "pomkotsmechs:port/port_tanker"
+      },
+      {
+        "factor": 1,
+        "value": "pomkotsmechs:port/port_tanker_small"
+      },
+      {
+        "factor": 0.5,
+        "value": "pomkotsmechs:factory/factory_crane"
+      },
+      {
+        "factor": 0.5,
+        "value": "pomkotsmechs:factory/factory_tank_medium"
+      }
+    ],
+    "bridges": [
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_open"
+      },
+      {
+        "factor": 1.0,
+        "value": "pomkotsmechs:common/bridge_covered"
+      }
+    ],
+    "fronts": [
+    ],
+    "stairs": [
+      {
+        "factor": 1.0,
+        "value": "stairs1"
+      }
+    ],
+    "fountains": [
+    ],
+    "parks": [
+      {
+        "factor": 1.0,
+        "value": "park_pool"
+      }
+    ],
+    "raildungeons": [
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon1"
+      },
+      {
+        "factor": 1.0,
+        "value": "rail_dungeon2"
+      }
+    ]
+  }
+}
