@@ -9,3 +9,4 @@ target/
 .project
 .factorypath
 dependency-reduced-pom.xml
+new.sh
