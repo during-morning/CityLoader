@@ -1,6 +1,8 @@
 package com.during.cityloader.command;
 
 import com.during.cityloader.CityLoaderPlugin;
+import com.during.cityloader.util.PaperResourceLoader;
+import com.during.cityloader.worldgen.gen.GlobalCompletionQueue;
 import com.during.cityloader.worldgen.lost.cityassets.AssetRegistries;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -101,6 +103,17 @@ public class InfoCommand implements SubCommand {
             sender.sendMessage("§7  调色板加载失败数: §f0");
             sender.sendMessage("§7  部件: §f0");
             sender.sendMessage("§7  建筑: §f0");
+        }
+        sender.sendMessage("§7  外部资产目录: §f" + PaperResourceLoader.getExternalDataRoots().size());
+        sender.sendMessage("§7  覆盖冲突(最近扫描): §f" + PaperResourceLoader.getLastScanConflicts().size());
+
+        if (sender instanceof Player player) {
+            GlobalCompletionQueue.Snapshot queue = GlobalCompletionQueue.snapshot(player.getWorld());
+            sender.sendMessage("");
+            sender.sendMessage("§e后处理队列:");
+            sender.sendMessage("§7  pending: §f" + queue.pending());
+            sender.sendMessage("§7  enqueued/executed/requeued: §f"
+                    + queue.totalEnqueued() + " / " + queue.totalExecuted() + " / " + queue.totalRequeued());
         }
 
         sender.sendMessage("");

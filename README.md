@@ -68,6 +68,8 @@ CityLoader 的核心由以下系统组成：
 - `/cityloader` 显示帮助
 - `/cityloader reload` 重载配置和资产
 - `/cityloader info` 显示插件状态、季节、资产统计
+- `/cityloader inspect [chunkX chunkZ]` 输出当前世界区块决策摘要（玩家）
+- `/cityloader inspect <world> <chunkX> <chunkZ>` 输出指定世界区块决策摘要（控制台/玩家）
 - `/cityloader version` 显示版本与服务器信息
 - `/cityloader generate [x] [y] [z]` 生成提示命令（当前主要用于引导，实际城市在新区块自动生成）
 
@@ -76,6 +78,7 @@ CityLoader 的核心由以下系统组成：
 - `cityloader.admin`
 - `cityloader.reload`
 - `cityloader.info`
+- `cityloader.inspect`
 - `cityloader.version`
 - `cityloader.generate`
 
@@ -149,7 +152,7 @@ mvn -Dtest=CityCoreStageSurfaceEmbeddingTest test
 - `profiles.selected-profile`: 全局默认 profile
 - `profiles.dimensions-with-profiles`: 按维度绑定 profile
 - `profiles.definitions`: profile 定义（城市密度、高度、地形修正、战利品、桥梁等）
-- `data.resource-packs`（若配置）: 外部资产包路径
+- `resource-packs`: 外部资产 overlay 目录（按列表顺序叠加，后者覆盖前者）
 
 建议优先调的地形参数（profile 内）:
 

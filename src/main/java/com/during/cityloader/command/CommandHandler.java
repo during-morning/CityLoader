@@ -47,6 +47,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private void registerSubCommands(VersionManager versionManager) {
         registerSubCommand(new ReloadCommand(plugin));
         registerSubCommand(new InfoCommand(plugin));
+        registerSubCommand(new InspectCommand(plugin));
         registerSubCommand(new VersionCommand(plugin, versionManager));
         registerSubCommand(new GenerateCommand(plugin));
     }

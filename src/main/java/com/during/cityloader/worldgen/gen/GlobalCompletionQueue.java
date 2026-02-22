@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 全局补全队列：承接超出 LimitedRegion 的延迟方块实体回写任务。
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class GlobalCompletionQueue {
 
     private static final Map<UUID, Deque<GenerationContext.BlockStateTask>> QUEUES = new ConcurrentHashMap<>();
+    private static final Map<UUID, QueueStats> STATS = new ConcurrentHashMap<>();
 
     private GlobalCompletionQueue() {
     }
@@ -24,6 +26,8 @@ public final class GlobalCompletionQueue {
             return;
         }
         QUEUES.computeIfAbsent(world.getUID(), id -> new ArrayDeque<>());
+        QueueStats stats = STATS.computeIfAbsent(world.getUID(), id -> new QueueStats());
+        stats.totalEnqueued.incrementAndGet();
         Deque<GenerationContext.BlockStateTask> queue = QUEUES.get(world.getUID());
         synchronized (queue) {
             queue.addLast(task);
@@ -38,6 +42,7 @@ public final class GlobalCompletionQueue {
         if (queue == null) {
             return 0;
         }
+        QueueStats stats = STATS.computeIfAbsent(world.getUID(), id -> new QueueStats());
 
         int executed = 0;
         int budget = maxTasks;
@@ -54,6 +59,7 @@ public final class GlobalCompletionQueue {
                 synchronized (queue) {
                     queue.addLast(task);
                 }
+                stats.totalRequeued.incrementAndGet();
                 continue;
             }
 
@@ -63,10 +69,12 @@ public final class GlobalCompletionQueue {
                     state.update(true, false);
                 }
                 executed++;
+                stats.totalExecuted.incrementAndGet();
             } catch (Exception ignored) {
                 synchronized (queue) {
                     queue.addLast(task);
                 }
+                stats.totalRequeued.incrementAndGet();
             }
         }
 
@@ -78,7 +86,40 @@ public final class GlobalCompletionQueue {
         return executed;
     }
 
+    public static Snapshot snapshot(World world) {
+        if (world == null) {
+            return new Snapshot(0, 0, 0, 0);
+        }
+        UUID id = world.getUID();
+        Deque<GenerationContext.BlockStateTask> queue = QUEUES.get(id);
+        int pending = 0;
+        if (queue != null) {
+            synchronized (queue) {
+                pending = queue.size();
+            }
+        }
+        QueueStats stats = STATS.get(id);
+        if (stats == null) {
+            return new Snapshot(pending, 0, 0, 0);
+        }
+        return new Snapshot(
+                pending,
+                stats.totalEnqueued.get(),
+                stats.totalExecuted.get(),
+                stats.totalRequeued.get());
+    }
+
     public static void clear() {
         QUEUES.clear();
+        STATS.clear();
+    }
+
+    private static final class QueueStats {
+        private final AtomicLong totalEnqueued = new AtomicLong();
+        private final AtomicLong totalExecuted = new AtomicLong();
+        private final AtomicLong totalRequeued = new AtomicLong();
+    }
+
+    public record Snapshot(int pending, long totalEnqueued, long totalExecuted, long totalRequeued) {
     }
 }

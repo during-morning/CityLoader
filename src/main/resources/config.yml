@@ -31,7 +31,8 @@ generation:
 
 # 资源包路径
 # 插件将从这些路径加载调色板、部件和建筑定义
-# 留空则只加载插件内置资源
+# 相对路径按 plugins/CityLoader/ 解析，列表后面的目录会覆盖前面的目录
+# 留空则只加载插件内置资源与 plugins/CityLoader/data
 resource-packs: []
 
 # 调试选项

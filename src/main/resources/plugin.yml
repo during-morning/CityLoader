@@ -13,7 +13,7 @@ softdepend: [RealisticSeasons]
 commands:
   cityloader:
     description: CityLoader主命令
-    usage: /cityloader <reload|version|info|generate>
+    usage: /cityloader <reload|version|info|inspect|generate>
     aliases: [cl, city]
     permission: cityloader.admin
     permission-message: §c你没有权限使用此命令
@@ -31,6 +31,9 @@ permissions:
     default: op
   cityloader.info:
     description: 查看插件信息的权限
+    default: op
+  cityloader.inspect:
+    description: 查看区块决策与后处理队列指标
     default: op
   cityloader.generate:
     description: 手动生成城市的权限

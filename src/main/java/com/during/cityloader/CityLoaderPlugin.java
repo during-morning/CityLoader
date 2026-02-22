@@ -23,6 +23,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -78,7 +81,7 @@ public class CityLoaderPlugin extends JavaPlugin {
             if (!dataRoot.exists() && dataRoot.mkdirs()) {
                 getLogger().info("  → 已创建外部数据目录: " + dataRoot.getPath());
             }
-            PaperResourceLoader.setExternalDataRoot(dataRoot.toPath());
+            applyResourceRoots(dataRoot, config);
             CityLoaderLogger assetLogger = new CityLoaderLogger(getLogger(),
                     config.isLogResourceLoading() || config.isDebugEnabled());
             AssetRegistries.setLogger(assetLogger);
@@ -151,8 +154,32 @@ public class CityLoaderPlugin extends JavaPlugin {
         if (newConfig != null) {
             this.config = newConfig;
         }
+        applyResourceRoots(new File(getDataFolder(), "data"), this.config);
         if (cityBlockPopulator != null) {
             cityBlockPopulator.invalidateWorldCache();
+        }
+    }
+
+    private void applyResourceRoots(File dataRootDir, PluginConfig runtimeConfig) {
+        List<Path> roots = new ArrayList<>();
+        if (dataRootDir != null) {
+            roots.add(dataRootDir.toPath().toAbsolutePath().normalize());
+        }
+        if (runtimeConfig != null && runtimeConfig.getResourcePacks() != null) {
+            for (String raw : runtimeConfig.getResourcePacks()) {
+                if (raw == null || raw.isBlank()) {
+                    continue;
+                }
+                File candidate = new File(raw);
+                if (!candidate.isAbsolute()) {
+                    candidate = new File(getDataFolder(), raw);
+                }
+                roots.add(candidate.toPath().toAbsolutePath().normalize());
+            }
+        }
+        PaperResourceLoader.setExternalDataRoots(roots);
+        if (!roots.isEmpty()) {
+            getLogger().info("  → 外部资产叠加目录数: " + roots.size());
         }
     }
 
@@ -190,5 +217,9 @@ public class CityLoaderPlugin extends JavaPlugin {
 
     public PluginConfig getPluginConfig() {
         return config;
+    }
+
+    public CityBlockPopulator getCityBlockPopulator() {
+        return cityBlockPopulator;
     }
 }

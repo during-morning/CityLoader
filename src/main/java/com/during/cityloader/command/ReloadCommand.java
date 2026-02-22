@@ -2,6 +2,7 @@ package com.during.cityloader.command;
 
 import com.during.cityloader.CityLoaderPlugin;
 import com.during.cityloader.config.PluginConfig;
+import com.during.cityloader.util.PaperResourceLoader;
 import com.during.cityloader.worldgen.lost.BuildingInfo;
 import com.during.cityloader.worldgen.lost.cityassets.AssetRegistries;
 import org.bukkit.World;
@@ -65,6 +66,7 @@ public class ReloadCommand implements SubCommand {
             PluginConfig reloaded = plugin.getConfigManager().reloadConfig();
             plugin.refreshRuntimeConfig(reloaded);
             sender.sendMessage("§a✓ 配置重载成功");
+            sender.sendMessage("§7  外部资产目录数: " + PaperResourceLoader.getExternalDataRoots().size());
             
             // 重载新架构资产
             AssetRegistries.reset();
@@ -81,6 +83,7 @@ public class ReloadCommand implements SubCommand {
 
             sender.sendMessage("§a✓ 资源重载成功: " + AssetRegistries.getStatistics());
             sender.sendMessage("§7  已预加载世界数: " + preloadedWorlds);
+            sender.sendMessage("§7  资产覆盖冲突数: " + PaperResourceLoader.getLastScanConflicts().size());
             
             sender.sendMessage("§a重载完成！");
             return true;

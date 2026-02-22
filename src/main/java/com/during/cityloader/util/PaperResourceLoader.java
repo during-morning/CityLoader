@@ -41,7 +41,7 @@ public class PaperResourceLoader {
     private static final Logger LOGGER = Logger.getLogger("CityLoader");
     private static final String DATA_ROOT = "data";
     private static final String LOSTCITIES_SCOPE = "lostcities";
-    private static volatile Path externalDataRoot;
+    private static volatile List<Path> externalDataRoots = List.of();
     private static volatile List<AssetConflict> lastScanConflicts = List.of();
 
     /**
@@ -321,7 +321,35 @@ public class PaperResourceLoader {
      * @param dataRoot 外部数据根目录
      */
     public static void setExternalDataRoot(Path dataRoot) {
-        externalDataRoot = dataRoot;
+        if (dataRoot == null) {
+            externalDataRoots = List.of();
+            return;
+        }
+        setExternalDataRoots(List.of(dataRoot));
+    }
+
+    /**
+     * 设置外部数据目录列表（按顺序叠加，后者覆盖前者）。
+     *
+     * @param dataRoots 外部数据目录列表
+     */
+    public static void setExternalDataRoots(List<Path> dataRoots) {
+        if (dataRoots == null || dataRoots.isEmpty()) {
+            externalDataRoots = List.of();
+            return;
+        }
+
+        List<Path> normalized = new ArrayList<>();
+        for (Path root : dataRoots) {
+            if (root == null) {
+                continue;
+            }
+            Path absolute = root.toAbsolutePath().normalize();
+            if (!normalized.contains(absolute)) {
+                normalized.add(absolute);
+            }
+        }
+        externalDataRoots = normalized.isEmpty() ? List.of() : List.copyOf(normalized);
     }
 
     /**
@@ -331,7 +359,17 @@ public class PaperResourceLoader {
      * @return 恒为null
      */
     public static Path getDataPackPath(World world) {
-        return externalDataRoot;
+        List<Path> roots = externalDataRoots;
+        return roots.isEmpty() ? null : roots.get(0);
+    }
+
+    /**
+     * 获取外部数据目录列表（按叠加顺序返回）。
+     *
+     * @return 外部目录列表
+     */
+    public static List<Path> getExternalDataRoots() {
+        return externalDataRoots;
     }
 
     private static <T> T loadAssetFromResourcePath(String resourcePath, Class<T> clazz, String assetId,
@@ -474,7 +512,7 @@ public class PaperResourceLoader {
                 name,
                 resource.sourcePack(),
                 absolutePath,
-                priority,
+                Math.max(priority, resource.priority()),
                 true);
     }
 
@@ -495,29 +533,33 @@ public class PaperResourceLoader {
     }
 
     private static List<ExternalJsonResource> scanExternalJsonResources() {
-        Path root = externalDataRoot;
-        if (root == null) {
-            return List.of();
-        }
-        if (!Files.isDirectory(root)) {
+        List<Path> roots = externalDataRoots;
+        if (roots.isEmpty()) {
             return List.of();
         }
 
-        String sourcePack = root.toString();
-        try (Stream<Path> stream = Files.walk(root)) {
-            List<ExternalJsonResource> resources = new ArrayList<>();
-            stream.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".json"))
-                    .sorted()
-                    .forEach(path -> {
-                        String relative = root.relativize(path).toString().replace('\\', '/');
-                        resources.add(new ExternalJsonResource(sourcePack, relative, path.toAbsolutePath().toString()));
-                    });
-            return resources;
-        } catch (IOException e) {
-            LOGGER.warning("扫描外部data目录失败: " + root + " error=" + e.getMessage());
-            return List.of();
+        List<ExternalJsonResource> resources = new ArrayList<>();
+        for (int i = 0; i < roots.size(); i++) {
+            Path root = roots.get(i);
+            if (!Files.isDirectory(root)) {
+                continue;
+            }
+
+            String sourcePack = root.toString();
+            int priority = 100 + i;
+            try (Stream<Path> stream = Files.walk(root)) {
+                stream.filter(Files::isRegularFile)
+                        .filter(path -> path.toString().endsWith(".json"))
+                        .sorted()
+                        .forEach(path -> {
+                            String relative = root.relativize(path).toString().replace('\\', '/');
+                            resources.add(new ExternalJsonResource(sourcePack, relative, path.toAbsolutePath().toString(), priority));
+                        });
+            } catch (IOException e) {
+                LOGGER.warning("扫描外部data目录失败: " + root + " error=" + e.getMessage());
+            }
         }
+        return resources;
     }
 
     private static Path getCodeSourcePath() {
@@ -575,7 +617,7 @@ public class PaperResourceLoader {
     private static List<String> buildResourceCandidates(String namespace, String folder, String name) {
         List<String> candidates = new ArrayList<>();
 
-        if (externalDataRoot != null) {
+        if (!externalDataRoots.isEmpty()) {
             List<String> externalCandidates = buildExternalCandidates(namespace, folder, name);
             candidates.addAll(externalCandidates);
         }
@@ -593,24 +635,27 @@ public class PaperResourceLoader {
 
     private static List<String> buildExternalCandidates(String namespace, String folder, String name) {
         List<String> candidates = new ArrayList<>();
-        Path root = externalDataRoot;
-        if (root == null) {
+        List<Path> roots = externalDataRoots;
+        if (roots.isEmpty()) {
             return candidates;
         }
 
-        Path lostcitiesPath = root.resolve(namespace)
-                .resolve(LOSTCITIES_SCOPE)
-                .resolve(folder)
-                .resolve(name + ".json");
-        if (Files.isRegularFile(lostcitiesPath)) {
-            candidates.add("external:" + lostcitiesPath.toAbsolutePath());
-        }
+        for (int i = roots.size() - 1; i >= 0; i--) {
+            Path root = roots.get(i);
+            Path lostcitiesPath = root.resolve(namespace)
+                    .resolve(LOSTCITIES_SCOPE)
+                    .resolve(folder)
+                    .resolve(name + ".json");
+            if (Files.isRegularFile(lostcitiesPath)) {
+                candidates.add("external:" + lostcitiesPath.toAbsolutePath());
+            }
 
-        Path fallbackPath = root.resolve(namespace)
-                .resolve(folder)
-                .resolve(name + ".json");
-        if (Files.isRegularFile(fallbackPath)) {
-            candidates.add("external:" + fallbackPath.toAbsolutePath());
+            Path fallbackPath = root.resolve(namespace)
+                    .resolve(folder)
+                    .resolve(name + ".json");
+            if (Files.isRegularFile(fallbackPath)) {
+                candidates.add("external:" + fallbackPath.toAbsolutePath());
+            }
         }
 
         return candidates;
@@ -646,6 +691,6 @@ public class PaperResourceLoader {
     private record ClasspathJsonResource(String sourcePack, String resourcePath) {
     }
 
-    private record ExternalJsonResource(String sourcePack, String resourcePath, String absolutePath) {
+    private record ExternalJsonResource(String sourcePack, String resourcePath, String absolutePath, int priority) {
     }
 }
