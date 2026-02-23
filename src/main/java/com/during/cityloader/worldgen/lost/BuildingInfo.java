@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 public class BuildingInfo {
 
     private static final int FLOOR_HEIGHT = 6;
+    private static final int MULTI_SELECTOR_GRID = 4;
 
     public final ChunkCoord coord;
     public final IDimensionInfo provider;
@@ -47,6 +48,7 @@ public class BuildingInfo {
 
     public boolean isCity;
     public boolean hasBuilding;
+    public boolean hasStreet;
     public int groundLevel;
     public final int waterLevel;
 
@@ -115,11 +117,18 @@ public class BuildingInfo {
 
         boolean streetChunk = isStreetChunk(coord.chunkX(), coord.chunkZ());
         boolean infrastructureChunk = highwayXLevel > 0 || highwayZLevel > 0;
-        this.hasBuilding = isCity && !streetChunk && !infrastructureChunk;
+        this.hasStreet = isCity && (streetChunk || infrastructureChunk);
+        this.hasBuilding = isCity && !hasStreet && shouldPlaceBuildingPlot(coord, provider.getSeed());
 
         MultiPlacement placement = resolveMultiBuilding(cityStyle, provider, coord);
         this.multiBuilding = placement.multiBuilding;
         this.multiBuildingPos = placement.multiPos;
+        if (!hasStreet && placement.multiBuilding instanceof MultiBuilding mb && placement.multiPos != null) {
+            String multiBuildingName = mb.getBuildingAt(placement.multiPos.getX(), placement.multiPos.getZ());
+            if (multiBuildingName != null && !multiBuildingName.isBlank()) {
+                this.hasBuilding = true;
+            }
+        }
 
         Building resolvedBuilding = hasBuilding ? resolveBuilding(random, cityStyle, placement, provider, coord) : null;
         this.buildingType = resolvedBuilding;
@@ -439,7 +448,7 @@ public class BuildingInfo {
             }
         }
 
-        return waterishColumns >= 5 || deepDropColumns >= 8;
+        return waterishColumns >= 3 || deepDropColumns >= 4;
     }
 
     private int clampHeight(int height) {
@@ -565,7 +574,12 @@ public class BuildingInfo {
             return MultiPlacement.none();
         }
 
-        String multiId = pickFromCityStyleChain(cityStyle, "multibuildings", chunkRandom(provider.getSeed(), coord.chunkX(), coord.chunkZ(), 0x1234ABCDL));
+        int selectorX = Math.floorDiv(coord.chunkX(), MULTI_SELECTOR_GRID);
+        int selectorZ = Math.floorDiv(coord.chunkZ(), MULTI_SELECTOR_GRID);
+        String multiId = pickFromCityStyleChain(
+                cityStyle,
+                "multibuildings",
+                chunkRandom(provider.getSeed(), selectorX, selectorZ, 0x1234ABCDL));
         if (multiId == null) {
             return MultiPlacement.none();
         }
@@ -580,6 +594,23 @@ public class BuildingInfo {
         MultiPos pos = new MultiPos(posX, posZ, Math.max(1, candidate.getDimX()), Math.max(1, candidate.getDimZ()));
 
         return new MultiPlacement(candidate, pos);
+    }
+
+    private boolean shouldPlaceBuildingPlot(ChunkCoord coord, long worldSeed) {
+        long hash = worldSeed ^ 0xC2B2AE3D27D4EB4FL;
+        hash ^= (long) coord.chunkX() * 0x9E3779B97F4A7C15L;
+        hash ^= (long) coord.chunkZ() * 0x94D049BB133111EBL;
+        int roll = Math.floorMod((int) (hash ^ (hash >>> 32)), 100);
+
+        int districtX = Math.floorDiv(coord.chunkX(), 3);
+        int districtZ = Math.floorDiv(coord.chunkZ(), 3);
+        long districtHash = worldSeed ^ 0x165667B19E3779F9L;
+        districtHash ^= (long) districtX * 0xD1B54A32D192ED03L;
+        districtHash ^= (long) districtZ * 0x94D049BB133111EBL;
+        int districtRoll = Math.floorMod((int) (districtHash ^ (districtHash >>> 32)), 100);
+
+        int threshold = districtRoll < 35 ? 42 : 64;
+        return roll < threshold;
     }
 
     private Building resolveBuilding(Random random, CityStyle cityStyle, MultiPlacement placement,

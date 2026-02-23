@@ -39,6 +39,11 @@ import java.util.Set;
  * 区块生成上下文
  */
 public class GenerationContext {
+    private static final int MOSS_WEIGHT_PERCENT = 30;
+    private static final int MOSSY_COBBLE_WEIGHT_PERCENT = 10;
+    private static final int COBBLE_WEIGHT_PERCENT = 10;
+    private static final int ORIGINAL_STYLE_WEIGHT_PERCENT = 30;
+    private static final int CRACKED_BRICK_WEIGHT_PERCENT = 10;
 
     private final WorldInfo worldInfo;
     private final IDimensionInfo dimensionInfo;
@@ -59,23 +64,26 @@ public class GenerationContext {
 
     // 将常见模组方块名降级到可用的原版材质，避免解析失败导致建筑细节丢失
     private static final Map<String, String> NON_VANILLA_BLOCK_ALIASES = Map.ofEntries(
+            // immersive_weathering
+            Map.entry("charred_planks", "oak_planks"),
+            Map.entry("charred_slab", "oak_slab"),
+            Map.entry("charred_stairs", "oak_stairs"),
+            Map.entry("cracked_bricks", "cracked_stone_bricks"),
+            Map.entry("cracked_deepslate_brick_slab", "deepslate_brick_slab"),
+            Map.entry("cracked_stone_brick_wall", "stone_brick_wall"),
+            Map.entry("cut_iron", "iron_block"),
             Map.entry("exposed_iron_bars", "iron_bars"),
             Map.entry("weathered_iron_bars", "iron_bars"),
             Map.entry("rusted_iron_bars", "iron_bars"),
             Map.entry("waxed_iron_door", "iron_door"),
-            Map.entry("cut_iron", "iron_block"),
-            Map.entry("charred_planks", "oak_planks"),
-            Map.entry("charred_slab", "oak_slab"),
-            Map.entry("charred_stairs", "oak_stairs"),
-            Map.entry("mossy_stone", "mossy_cobblestone"),
-            Map.entry("mossy_stone_slab", "mossy_cobblestone_slab"),
-            Map.entry("mossy_stone_stairs", "mossy_cobblestone_stairs"),
-            Map.entry("mossy_stone_wall", "mossy_cobblestone_wall"),
-            Map.entry("mossy_bricks", "mossy_stone_bricks"),
-            Map.entry("mossy_brick_slab", "mossy_stone_brick_slab"),
-            Map.entry("cracked_bricks", "cracked_stone_bricks"),
-            Map.entry("cracked_stone_brick_wall", "stone_brick_wall"),
-            Map.entry("cracked_deepslate_brick_slab", "deepslate_brick_slab"),
+            Map.entry("mossy_brick_slab", "stone_brick_slab"),
+            Map.entry("mossy_bricks", "stone_bricks"),
+            Map.entry("mossy_stone", "cobblestone"),
+            Map.entry("mossy_stone_slab", "cobblestone_slab"),
+            Map.entry("mossy_stone_stairs", "cobblestone_stairs"),
+            Map.entry("mossy_stone_wall", "cobblestone_wall"),
+            Map.entry("stone_wall", "stone_brick_wall"),
+            // pomkotsmechs
             Map.entry("pomkotscube", "iron_block"),
             Map.entry("mechworkbench", "crafting_table")
     );
@@ -191,7 +199,8 @@ public class GenerationContext {
         if (material == null) {
             return;
         }
-        setBlockData(localX, y, localZ, material.createBlockData());
+        Material resolved = maybeDemossifyMaterial(localX, y, localZ, material);
+        setBlockData(localX, y, localZ, resolved.createBlockData());
     }
 
     /**
@@ -204,6 +213,14 @@ public class GenerationContext {
      */
     public void setBlockData(int localX, int y, int localZ, BlockData blockData) {
         if (blockData == null) {
+            return;
+        }
+        Material demossified = maybeDemossifyMaterial(localX, y, localZ, blockData.getMaterial());
+        if (demossified != null && demossified != blockData.getMaterial()) {
+            blockData = demossified.createBlockData();
+        }
+        if (isOutsidePrimaryChunk(localX, localZ)) {
+            setBlockDataOutsideChunk(localX, y, localZ, blockData);
             return;
         }
         driver.current(localX, y, localZ).block(blockData);
@@ -349,7 +366,37 @@ public class GenerationContext {
      * @return 方块数据
      */
     public BlockData getBlockData(int localX, int y, int localZ) {
+        if (isOutsidePrimaryChunk(localX, localZ)) {
+            if (region == null) {
+                return null;
+            }
+            int worldX = worldX(localX);
+            int worldZ = worldZ(localZ);
+            if (!region.isInRegion(worldX, y, worldZ)) {
+                return null;
+            }
+            return region.getBlockData(worldX, y, worldZ);
+        }
         return driver.getBlock(localX, y, localZ);
+    }
+
+    private boolean isOutsidePrimaryChunk(int localX, int localZ) {
+        return localX < 0 || localX > 15 || localZ < 0 || localZ > 15;
+    }
+
+    private void setBlockDataOutsideChunk(int localX, int y, int localZ, BlockData blockData) {
+        if (region == null || blockData == null) {
+            return;
+        }
+        int worldX = worldX(localX);
+        int worldZ = worldZ(localZ);
+        if (!region.isInRegion(worldX, y, worldZ)) {
+            return;
+        }
+        BlockData corrected = driver.correct(blockData, worldX, y, worldZ);
+        if (corrected != null) {
+            region.setBlockData(worldX, y, worldZ, corrected);
+        }
     }
 
     /**
@@ -466,10 +513,134 @@ public class GenerationContext {
         if (definition == null || definition.isBlank()) {
             return;
         }
-        BlockData blockData = parseBlockData(definition);
+        String normalizedDefinition = maybeDemossifyDefinition(localX, y, localZ, definition);
+        BlockData blockData = parseBlockData(normalizedDefinition);
         if (blockData != null) {
             setBlockData(localX, y, localZ, blockData);
+            return;
         }
+        Material fallback = resolveFallbackMaterialForDefinition(normalizedDefinition);
+        if (fallback != null && fallback != Material.AIR) {
+            setBlock(localX, y, localZ, fallback);
+        }
+    }
+
+    private Material maybeDemossifyMaterial(int localX, int y, int localZ, Material source) {
+        if (source == null) {
+            return null;
+        }
+        Material replacement = mossReplacement(localX, y, localZ, source);
+        if (replacement == null) {
+            return source;
+        }
+        return replacement;
+    }
+
+    private String maybeDemossifyDefinition(int localX, int y, int localZ, String definition) {
+        if (definition == null || definition.isBlank()) {
+            return definition;
+        }
+        String trimmed = definition.trim();
+        int stateStart = trimmed.indexOf('[');
+        String idPart = stateStart >= 0 ? trimmed.substring(0, stateStart) : trimmed;
+        String statePart = stateStart >= 0 ? trimmed.substring(stateStart) : "";
+
+        String normalizedId = idPart.toLowerCase(Locale.ROOT);
+        int colon = normalizedId.indexOf(':');
+        String namespace = colon >= 0 ? normalizedId.substring(0, colon) : "minecraft";
+        String path = colon >= 0 ? normalizedId.substring(colon + 1) : normalizedId;
+        if (path.isBlank()) {
+            return definition;
+        }
+
+        String replacementPath = mossReplacement(localX, y, localZ, path);
+        if (replacementPath == null) {
+            return definition;
+        }
+        return namespace + ":" + replacementPath + statePart;
+    }
+
+    private int weatheredRoll(int localX, int y, int localZ, String key) {
+        long hash = 0x9E3779B97F4A7C15L;
+        hash ^= (long) chunkX * 341873128712L;
+        hash ^= (long) chunkZ * 132897987541L;
+        hash ^= (long) localX * 0x517cc1b727220a95L;
+        hash ^= (long) localZ * 0x94d049bb133111ebL;
+        hash ^= (long) y * 0xD6E8FEB86659FD93L;
+        hash ^= (long) key.hashCode() * 0x27d4eb2dL;
+        return Math.floorMod((int) (hash ^ (hash >>> 32)), 100);
+    }
+
+    private Material mossReplacement(int localX, int y, int localZ, Material source) {
+        return switch (source) {
+            case MOSS_BLOCK, MOSSY_STONE_BRICKS, MOSSY_COBBLESTONE ->
+                    pickWeatheredBlock(localX, y, localZ, source.name().toLowerCase(Locale.ROOT), source);
+            case MOSSY_STONE_BRICK_SLAB -> Material.STONE_BRICK_SLAB;
+            case MOSSY_STONE_BRICK_STAIRS -> Material.STONE_BRICK_STAIRS;
+            case MOSSY_STONE_BRICK_WALL -> Material.STONE_BRICK_WALL;
+            case MOSSY_COBBLESTONE_SLAB -> Material.COBBLESTONE_SLAB;
+            case MOSSY_COBBLESTONE_STAIRS -> Material.COBBLESTONE_STAIRS;
+            case MOSSY_COBBLESTONE_WALL -> Material.COBBLESTONE_WALL;
+            default -> null;
+        };
+    }
+
+    private String mossReplacement(int localX, int y, int localZ, String path) {
+        return switch (path) {
+            case "moss_block", "mossy_stone_bricks", "mossy_cobblestone" -> {
+                Material source = switch (path) {
+                    case "moss_block" -> Material.MOSS_BLOCK;
+                    case "mossy_stone_bricks" -> Material.MOSSY_STONE_BRICKS;
+                    default -> Material.MOSSY_COBBLESTONE;
+                };
+                Material picked = pickWeatheredBlock(localX, y, localZ, path, source);
+                yield picked == null ? null : picked.name().toLowerCase(Locale.ROOT);
+            }
+            case "mossy_stone_brick_slab" -> "stone_brick_slab";
+            case "mossy_stone_brick_stairs" -> "stone_brick_stairs";
+            case "mossy_stone_brick_wall" -> "stone_brick_wall";
+            case "mossy_cobblestone_slab" -> "cobblestone_slab";
+            case "mossy_cobblestone_stairs" -> "cobblestone_stairs";
+            case "mossy_cobblestone_wall" -> "cobblestone_wall";
+            default -> null;
+        };
+    }
+
+    private Material pickWeatheredBlock(int localX, int y, int localZ, String key, Material source) {
+        int roll = weatheredRoll(localX, y, localZ, key);
+        int cursor = MOSS_WEIGHT_PERCENT;
+        if (roll < cursor) {
+            return Material.MOSS_BLOCK;
+        }
+        cursor += MOSSY_COBBLE_WEIGHT_PERCENT;
+        if (roll < cursor) {
+            return Material.MOSSY_COBBLESTONE;
+        }
+        cursor += COBBLE_WEIGHT_PERCENT;
+        if (roll < cursor) {
+            return Material.COBBLESTONE;
+        }
+        cursor += ORIGINAL_STYLE_WEIGHT_PERCENT;
+        if (roll < cursor) {
+            return originalStyleFallback(localX, y, localZ, source);
+        }
+        cursor += CRACKED_BRICK_WEIGHT_PERCENT;
+        if (roll < cursor) {
+            return Material.CRACKED_STONE_BRICKS;
+        }
+        return Material.MOSSY_STONE_BRICKS;
+    }
+
+    private Material originalStyleFallback(int localX, int y, int localZ, Material source) {
+        if (source == Material.MOSSY_COBBLESTONE) {
+            return Material.COBBLESTONE;
+        }
+        int styleRoll = weatheredRoll(localX, y, localZ, "style:" + source.name()) % 3;
+        return switch (styleRoll) {
+            case 0 -> Material.STONE_BRICKS;
+            case 1 -> Material.BRICKS;
+            default -> Material.STONE;
+        };
     }
 
     /**
@@ -505,9 +676,32 @@ public class GenerationContext {
         if (result == null) {
             result = tryCreateMaterialBlockData(normalized);
         }
+        if (result != null && shouldUseDefaultConnectivity(result.getMaterial())) {
+            result = recreateWithDefaultState(result.getMaterial(), result);
+        }
 
         blockDataCache.put(cacheKey, result);
         return result;
+    }
+
+    private boolean shouldUseDefaultConnectivity(Material material) {
+        if (material == null) {
+            return false;
+        }
+        String name = material.name();
+        return name.endsWith("_PANE")
+                || name.endsWith("_FENCE")
+                || name.endsWith("_WALL")
+                || material == Material.IRON_BARS
+                || material == Material.CHAIN;
+    }
+
+    private BlockData recreateWithDefaultState(Material material, BlockData fallback) {
+        try {
+            return material.createBlockData();
+        } catch (Exception ignored) {
+            return fallback;
+        }
     }
 
     private BlockData tryCreateBlockData(String definition) {
@@ -598,23 +792,23 @@ public class GenerationContext {
 
     /**
      * 未识别材质统一回退：
-     * 石砖(高概率) / 苔藓石砖 / 苔藓块 / 原石 / 苔石。
+     * 接近 LostCities 的中性石材，不再偏苔藓风格。
      */
     private Material pickRuinFallbackMaterial(String key) {
         int roll = Math.floorMod(key.hashCode(), 100);
-        if (roll < 58) {
+        if (roll < 45) {
             return Material.STONE_BRICKS;
         }
-        if (roll < 76) {
-            return Material.MOSSY_STONE_BRICKS;
+        if (roll < 65) {
+            return Material.STONE;
         }
-        if (roll < 86) {
-            return Material.MOSS_BLOCK;
-        }
-        if (roll < 94) {
+        if (roll < 80) {
             return Material.COBBLESTONE;
         }
-        return Material.MOSSY_COBBLESTONE;
+        if (roll < 92) {
+            return Material.ANDESITE;
+        }
+        return Material.DEEPSLATE;
     }
 
     private String bestTokenAlias(String path) {
@@ -759,8 +953,35 @@ public class GenerationContext {
         if (material != null) {
             return material;
         }
+        material = resolveAliasedMaterial(namespaced);
+        if (material != null) {
+            return material;
+        }
+        if (fallback != null) {
+            return fallback;
+        }
+        return pickRuinFallbackMaterial(simple);
+    }
 
-        return fallback;
+    private Material resolveFallbackMaterialForDefinition(String definition) {
+        if (definition == null || definition.isBlank()) {
+            return null;
+        }
+        String value = definition.toLowerCase(Locale.ROOT).trim();
+        int stateIndex = value.indexOf('[');
+        if (stateIndex >= 0) {
+            value = value.substring(0, stateIndex);
+        }
+        int colon = value.indexOf(':');
+        String simple = colon >= 0 ? value.substring(colon + 1) : value;
+        if (simple.equals("air") || simple.equals("cave_air") || simple.equals("void_air")) {
+            return Material.AIR;
+        }
+        Material alias = resolveAliasedMaterial(value);
+        if (alias != null) {
+            return alias;
+        }
+        return pickRuinFallbackMaterial(simple);
     }
 
     private boolean applyBlockEntityTag(BlockState state, Map<String, Object> tag) {

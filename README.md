@@ -49,17 +49,25 @@ CityLoader 的核心由以下系统组成：
 - `-Dcityloader.safeMode=true|false` 控制是否仅运行核心阶段
 - `-Dcityloader.maxChunkGenMs=<毫秒>` 控制单区块阶段预算（超时跳过后续阶段）
 
-## 3. 已修复的地形问题（本次）
+## 3. 生成策略更新（本次）
 
-针对“地形无过渡、建筑与地形重合”做了三类修复：
+针对“苔藓替换偏差、建筑底层不完整、区块建筑过密”进行了修正：
 
-- 建筑净空改为“边缘保留过渡带”，不再粗暴整块清空
-- 街区地表修正提高可挖深度，避免道路/建筑底部被山体穿入
-- 道路增加净空清理，保证路面上方不会残留原地形穿模
+- 苔藓系方块不再替换为 `grass_block`，改为稳定权重分布：
+  - 苔藓块 `30%`
+  - 苔藓圆石 `10%`
+  - 圆石 `10%`
+  - 石砖/红砖/原建筑基底 `30%`
+  - 裂纹石砖 `10%`
+  - 苔石砖 `10%`
+- 建筑地基补强从“仅 multi-building”扩展为“所有建筑”，修复底部一层悬空/缺块
+- 建筑落点引入分区稀疏化，减少“几乎每个可建区块都放一个建筑”的密度
 
-相关代码:
+相关代码：
 
 - `src/main/java/com/during/cityloader/worldgen/gen/CityCoreStage.java`
+- `src/main/java/com/during/cityloader/worldgen/gen/GenerationContext.java`
+- `src/main/java/com/during/cityloader/worldgen/gen/PostProcessStage.java`
 
 ## 4. 命令与权限
 
@@ -180,4 +188,4 @@ mvn -Dtest=CityCoreStageSurfaceEmbeddingTest test
 
 ---
 
-最后更新: `2026-02-22`
+最后更新: `2026-02-23`
