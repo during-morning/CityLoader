@@ -101,8 +101,8 @@ public final class DamageStage implements GenerationStage {
         float dirtScale = profile.getRubbleDirtScale();
         float leaveScale = profile.getRubbleLeaveScale();
         
-        Material dirtMaterial = Material.DIRT;
-        Material leaveMaterial = Material.MOSSY_COBBLESTONE;
+        Material dirtMaterial = Material.GRAVEL;
+        Material leaveMaterial = Material.COBBLESTONE;
         
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -128,7 +128,7 @@ public final class DamageStage implements GenerationStage {
                     if (leavesY < 256) {
                         double leafNoise = getNoiseValue(context, x + 100, z + 100, leaveScale, RUBBLE_LEAF_SALT);
                         if (Math.abs(leafNoise) > 0.3) {
-                            context.setBlock(x, leavesY, z, Material.VINE);
+                            context.setBlock(x, leavesY, z, Material.AIR);
                         }
                     }
                 }
@@ -249,6 +249,9 @@ public final class DamageStage implements GenerationStage {
         if (current == null) {
             return true;
         }
+        if (y <= context.getBuildingInfo().getCityGroundLevel() + 1) {
+            return true;
+        }
 
         String name = current.name();
         if (name.contains("RAIL")) {
@@ -313,8 +316,8 @@ public final class DamageStage implements GenerationStage {
         Map<Material, Material> map = new EnumMap<>(Material.class);
 
         map.put(Material.STONE_BRICKS, Material.CRACKED_STONE_BRICKS);
-        map.put(Material.CRACKED_STONE_BRICKS, Material.MOSSY_STONE_BRICKS);
-        map.put(Material.MOSSY_STONE_BRICKS, Material.IRON_BARS);
+        map.put(Material.CRACKED_STONE_BRICKS, Material.COBBLESTONE);
+        map.put(Material.MOSSY_STONE_BRICKS, Material.COBBLESTONE);
 
         map.put(Material.POLISHED_BLACKSTONE_BRICKS, Material.CRACKED_POLISHED_BLACKSTONE_BRICKS);
         map.put(Material.CRACKED_POLISHED_BLACKSTONE_BRICKS, Material.BLACKSTONE);

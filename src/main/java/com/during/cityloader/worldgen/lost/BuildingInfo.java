@@ -576,6 +576,10 @@ public class BuildingInfo {
 
         int selectorX = Math.floorDiv(coord.chunkX(), MULTI_SELECTOR_GRID);
         int selectorZ = Math.floorDiv(coord.chunkZ(), MULTI_SELECTOR_GRID);
+        Random multiTriggerRandom = chunkRandom(provider.getSeed(), selectorX, selectorZ, 0x55AA7711L);
+        if (multiTriggerRandom.nextFloat() >= 0.28f) {
+            return MultiPlacement.none();
+        }
         String multiId = pickFromCityStyleChain(
                 cityStyle,
                 "multibuildings",
@@ -609,7 +613,7 @@ public class BuildingInfo {
         districtHash ^= (long) districtZ * 0x94D049BB133111EBL;
         int districtRoll = Math.floorMod((int) (districtHash ^ (districtHash >>> 32)), 100);
 
-        int threshold = districtRoll < 35 ? 42 : 64;
+        int threshold = districtRoll < 35 ? 18 : 35;
         return roll < threshold;
     }
 
