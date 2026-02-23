@@ -94,6 +94,8 @@ public class CityCoreStage implements GenerationStage {
         // 所有建筑都补齐基础承重，避免底层/地下层出现“悬空缺块”。
         if (info.hasBuilding) {
             stabilizeBuildingFoundation(context, info);
+            compactFoundationMass(context, info);
+            purgeBuildingWater(context, info);
             sealExposedBuildingEdges(context, info);
         }
     }
@@ -712,6 +714,7 @@ public class CityCoreStage implements GenerationStage {
                         westHeightmap, eastHeightmap, northHeightmap, southHeightmap);
             }
         }
+        healRoadSurface(context, y, roadBase, road);
         cleanupStreetVegetation(context, y);
     }
 
@@ -760,6 +763,32 @@ public class CityCoreStage implements GenerationStage {
                     if (onRoadSurface || floating) {
                         context.setBlock(x, y, z, Material.AIR);
                     }
+                }
+            }
+        }
+    }
+
+    private void healRoadSurface(GenerationContext context, int roadY, Material base, Material top) {
+        Material safeBase = base == null ? Material.STONE : base;
+        Material safeTop = top == null ? Material.STONE_BRICKS : top;
+        int minY = context.getWorldInfo().getMinHeight();
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                Material topBlock = context.getBlockType(x, roadY, z);
+                if (isAir(topBlock) || topBlock == Material.WATER || topBlock == Material.LAVA || topBlock == Material.BUBBLE_COLUMN) {
+                    context.setBlock(x, roadY, z, safeTop);
+                }
+                Material baseBlock = context.getBlockType(x, roadY - 1, z);
+                if (isAir(baseBlock) || baseBlock == Material.WATER || baseBlock == Material.LAVA || baseBlock == Material.BUBBLE_COLUMN) {
+                    context.setBlock(x, roadY - 1, z, safeBase);
+                }
+                for (int y = roadY - 2; y >= Math.max(minY, roadY - 40); y--) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (isAir(current) || current == Material.WATER || current == Material.LAVA || current == Material.BUBBLE_COLUMN) {
+                        context.setBlock(x, y, z, Material.STONE);
+                        continue;
+                    }
+                    break;
                 }
             }
         }
@@ -845,6 +874,46 @@ public class CityCoreStage implements GenerationStage {
                         continue;
                     }
                     break;
+                }
+            }
+        }
+    }
+
+    private void compactFoundationMass(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding) {
+            return;
+        }
+        IDimensionInfo dimInfo = context.getDimensionInfo();
+        ChunkHeightmap heightmap = dimInfo == null ? null : dimInfo.getHeightmap(context.getChunkX(), context.getChunkZ());
+        int minY = context.getWorldInfo().getMinHeight();
+        int topY = info.getCityGroundLevel() - Math.max(0, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT - 1;
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int terrain = TerrainEmbeddingEngine.terrainHeight(heightmap, x, z, topY - 32);
+                int bottomY = Math.max(minY, Math.min(topY - 48, terrain));
+                for (int y = topY; y >= bottomY; y--) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (isAir(current) || current == Material.WATER || current == Material.LAVA || current == Material.BUBBLE_COLUMN) {
+                        context.setBlock(x, y, z, Material.STONE);
+                    }
+                }
+            }
+        }
+    }
+
+    private void purgeBuildingWater(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding) {
+            return;
+        }
+        int minY = Math.max(context.getWorldInfo().getMinHeight(), info.getCityGroundLevel() - Math.max(1, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT);
+        int maxY = Math.min(context.getWorldInfo().getMaxHeight() - 1, info.getMaxHeight() + 4);
+        for (int x = 1; x < 15; x++) {
+            for (int z = 1; z < 15; z++) {
+                for (int y = minY; y <= maxY; y++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (current == Material.WATER || current == Material.LAVA || current == Material.BUBBLE_COLUMN) {
+                        context.setBlock(x, y, z, Material.AIR);
+                    }
                 }
             }
         }

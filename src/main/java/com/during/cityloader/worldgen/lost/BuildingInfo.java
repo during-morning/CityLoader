@@ -105,7 +105,7 @@ public class BuildingInfo {
 
         // LostCities 语义：cityFactor 需要超过 cityThreshold 才算城市区块
         float cityFactor = City.getCityFactor(coord, provider, profile);
-        this.isCity = cityFactor > profile.getCityThreshold();
+        this.isCity = smoothCityMembership(coord, provider, profile, cityFactor > profile.getCityThreshold());
 
         this.cityLevel = isCity ? getCityLevel(coord, provider) : 0;
         CITY_LEVEL_CACHE.put(coord, this.cityLevel);
@@ -577,7 +577,7 @@ public class BuildingInfo {
         int selectorX = Math.floorDiv(coord.chunkX(), MULTI_SELECTOR_GRID);
         int selectorZ = Math.floorDiv(coord.chunkZ(), MULTI_SELECTOR_GRID);
         Random multiTriggerRandom = chunkRandom(provider.getSeed(), selectorX, selectorZ, 0x55AA7711L);
-        if (multiTriggerRandom.nextFloat() >= 0.28f) {
+        if (multiTriggerRandom.nextFloat() >= 0.12f) {
             return MultiPlacement.none();
         }
         String multiId = pickFromCityStyleChain(
@@ -613,8 +613,20 @@ public class BuildingInfo {
         districtHash ^= (long) districtZ * 0x94D049BB133111EBL;
         int districtRoll = Math.floorMod((int) (districtHash ^ (districtHash >>> 32)), 100);
 
-        int threshold = districtRoll < 35 ? 18 : 35;
+        int threshold = districtRoll < 35 ? 8 : 18;
         return roll < threshold;
+    }
+
+    private boolean smoothCityMembership(ChunkCoord coord, IDimensionInfo provider, LostCityProfile profile, boolean baseCity) {
+        if (baseCity) {
+            return true;
+        }
+        int cityNeighbors = 0;
+        if (isCityRaw(coord.west(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.east(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.north(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.south(), provider, profile)) cityNeighbors++;
+        return cityNeighbors >= 3;
     }
 
     private Building resolveBuilding(Random random, CityStyle cityStyle, MultiPlacement placement,

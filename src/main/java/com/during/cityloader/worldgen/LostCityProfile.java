@@ -66,7 +66,7 @@ public class LostCityProfile {
     private boolean editMode = false;
 
     private boolean generateNether = false;
-    private boolean generateSpawners = true;
+    private boolean generateSpawners = false;
     private boolean generateLoot = true;
     private boolean generateLighting = false;
     private boolean avoidWater = false;

@@ -39,6 +39,8 @@ public class PostProcessStage implements GenerationStage {
         }
         executePalettePostTodo(context, info);
         executePostTodo(info);
+        removeAllSpawners(context, info);
+        cleanupGroundVegetation(context, info);
     }
 
     private void executePalettePostTodo(GenerationContext context, BuildingInfo info) {
@@ -79,6 +81,9 @@ public class PostProcessStage implements GenerationStage {
     }
 
     private void applyMobTodo(GenerationContext context, BuildingInfo.PalettePostTodo todo) {
+        // 明确禁用刷怪笼配置注入
+        return;
+        /*
         Material current = context.getBlockType(todo.x(), todo.y(), todo.z());
         if (current == Material.SPAWNER) {
             LostCityProfile profile = context.getDimensionInfo().getProfile();
@@ -88,6 +93,24 @@ public class PostProcessStage implements GenerationStage {
             String mobId = resolveConditionValue(context, todo.mob(), todo);
             if (mobId != null && !mobId.isBlank()) {
                 context.queueSpawnerMob(todo.x(), todo.y(), todo.z(), mobId);
+            }
+        }
+        */
+    }
+
+    private void removeAllSpawners(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.isCity) {
+            return;
+        }
+        int minY = Math.max(context.getWorldInfo().getMinHeight(), info.getCityGroundLevel() - 16);
+        int maxY = Math.min(context.getWorldInfo().getMaxHeight() - 1, info.getMaxHeight() + 16);
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = minY; y <= maxY; y++) {
+                    if (context.getBlockType(x, y, z) == Material.SPAWNER) {
+                        context.setBlock(x, y, z, Material.AIR);
+                    }
+                }
             }
         }
     }
@@ -386,36 +409,120 @@ public class PostProcessStage implements GenerationStage {
             return;
         }
         int thickness = profile.getThicknessOfRandomLeafBlocks();
-        
-        int cityGroundY = context.getBuildingInfo().getCityGroundLevel();
+        if (thickness <= 0) {
+            return;
+        }
+
+        int roofBaseY = context.getBuildingInfo().getMaxHeight();
+        int startY = Math.max(context.getWorldInfo().getMinHeight() + 1, roofBaseY + 1);
+        int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        if (startY > maxY) {
+            return;
+        }
         
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 if (random.nextFloat() > leafChance) {
                     continue;
                 }
-                
-                Material current = context.getBlockType(x, cityGroundY - 1, z);
-                if (!isSolidSupport(current)) {
-                    continue;
-                }
-                
+
                 for (int t = 0; t < thickness; t++) {
-                    int y = cityGroundY - 1 - t;
-                    if (y < context.getWorldInfo().getMinHeight()) {
+                    int y = startY + t;
+                    if (y > maxY) {
                         break;
                     }
-                    
+
+                    Material below = context.getBlockType(x, y - 1, z);
+                    if (!isSolidSupport(below)) {
+                        break;
+                    }
                     Material existing = context.getBlockType(x, y, z);
-                    if (existing != null && existing != Material.AIR) {
+                    if (!isAirLike(existing)) {
                         break;
                     }
-                    
+
                     Material leafType = seasonalLeafType(random, context.getSeason());
                     context.setBlock(x, y, z, leafType);
                 }
             }
         }
+    }
+
+    private void cleanupGroundVegetation(GenerationContext context, BuildingInfo info) {
+        if (info == null) {
+            return;
+        }
+        if (!info.isCity) {
+            return;
+        }
+        int minY = context.getWorldInfo().getMinHeight();
+        int floorY = info.getCityGroundLevel();
+        int fromY = Math.max(minY, floorY - 8);
+        int toY = Math.min(context.getWorldInfo().getMaxHeight() - 1, floorY + 2);
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = fromY; y <= toY; y++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (!isGroundPollutingVegetation(current)) {
+                        continue;
+                    }
+                    if (y <= floorY) {
+                        context.setBlock(x, y, z, Material.AIR);
+                        continue;
+                    }
+                    Material below = context.getBlockType(x, y - 1, z);
+                    if (!isSolidSupport(below)) {
+                        context.setBlock(x, y, z, Material.AIR);
+                    }
+                }
+                Material floor = context.getBlockType(x, floorY, z);
+                if (info.hasBuilding && isAirLike(floor)) {
+                    context.setBlock(x, floorY, z, pickRuinFloorMaterial(context, x, z, floorY));
+                }
+            }
+        }
+    }
+
+    private boolean isGroundPollutingVegetation(Material material) {
+        if (material == null) {
+            return false;
+        }
+        String name = material.name();
+        return name.equals("VINE")
+                || name.equals("MOSS_BLOCK")
+                || name.equals("MOSS_CARPET")
+                || name.contains("GRASS")
+                || name.contains("FERN")
+                || name.contains("SEAGRASS")
+                || name.startsWith("KELP")
+                || name.endsWith("_SAPLING")
+                || name.endsWith("_LEAVES");
+    }
+
+    private Material pickRuinFloorMaterial(GenerationContext context, int x, int z, int y) {
+        long hash = 0x9E3779B97F4A7C15L;
+        hash ^= (long) context.getChunkX() * 341873128712L;
+        hash ^= (long) context.getChunkZ() * 132897987541L;
+        hash ^= (long) x * 0x517cc1b727220a95L;
+        hash ^= (long) z * 0x94d049bb133111ebL;
+        hash ^= (long) y * 0xD6E8FEB86659FD93L;
+        int roll = (int) Math.floorMod(hash, 100);
+        if (roll < 42) {
+            return Material.STONE_BRICKS;
+        }
+        if (roll < 68) {
+            return Material.COBBLESTONE;
+        }
+        if (roll < 86) {
+            return Material.ANDESITE;
+        }
+        if (roll < 95) {
+            return Material.DEEPSLATE_BRICKS;
+        }
+        if (roll < 99) {
+            return Material.STONE;
+        }
+        return Material.DEEPSLATE;
     }
 
     private void placeTorches(GenerationContext context, int y) {

@@ -19,7 +19,7 @@ public class ParkStage implements GenerationStage {
         BuildingInfo info = context.getBuildingInfo();
         LostCityProfile profile = context.getDimensionInfo().getProfile();
         
-        if (!info.isCity || !info.hasBuilding) {
+        if (!info.isCity || info.hasBuilding || !info.hasStreet) {
             return;
         }
         

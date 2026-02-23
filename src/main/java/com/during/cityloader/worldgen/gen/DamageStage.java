@@ -191,8 +191,8 @@ public final class DamageStage implements GenerationStage {
                     }
 
                     float strength = 1.0f - (distance / Math.max(1.0f, radius));
-                    float destroyChance = destructive ? strength * 0.65f : strength * 0.35f;
-                    float damageChance = strength * 0.55f;
+                    float destroyChance = destructive ? strength * 0.28f : strength * 0.12f;
+                    float damageChance = strength * 0.45f;
 
                     float roll = random.nextFloat();
                     if (roll < destroyChance) {
@@ -239,8 +239,8 @@ public final class DamageStage implements GenerationStage {
             return;
         }
 
-        if (damaged == Material.AIR && y <= context.getBuildingInfo().waterLevel) {
-            damaged = Material.WATER;
+        if (damaged == Material.AIR) {
+            damaged = Material.CRACKED_STONE_BRICKS;
         }
         context.setBlock(localX, y, localZ, damaged);
     }

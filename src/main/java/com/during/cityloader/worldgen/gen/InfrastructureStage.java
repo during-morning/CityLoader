@@ -29,6 +29,10 @@ import java.util.Locale;
  */
 public class InfrastructureStage implements GenerationStage {
     private static final int HIGHWAY_CLEAR_HEIGHT = 15;
+    private static final int RAIL_TUNNEL_CLEAR_HEIGHT = 9;
+    private static final int HIGHWAY_TUNNEL_CLEAR_HEIGHT = 6;
+    private static final int RAIL_TUNNEL_INNER_MIN = 7;
+    private static final int RAIL_TUNNEL_INNER_MAX = 9;
 
     @Override
     public void generate(GenerationContext context) {
@@ -112,6 +116,7 @@ public class InfrastructureStage implements GenerationStage {
                 if (profile.isBridgeSupports()) {
                     applyRailTerrainFix(context, stationY, Material.STONE_BRICKS, xAxis, profile);
                 }
+                clearRailTunnel(context, stationY + 1, xAxis);
                 return;
             }
         }
@@ -139,6 +144,7 @@ public class InfrastructureStage implements GenerationStage {
                 setRailBlock(context, 8, stationY + 1, z, Material.POWERED_RAIL, Rail.Shape.NORTH_SOUTH);
             }
         }
+        clearRailTunnel(context, stationY + 1, xAxis);
     }
 
     private void drawRailXEnd(GenerationContext context,
@@ -215,7 +221,7 @@ public class InfrastructureStage implements GenerationStage {
         if (part != null) {
             renderPart(context, part, y, false, Transform.ROTATE_NONE, profile);
         } else {
-            Material deck = effectiveBridge ? Material.SMOOTH_STONE : Material.POLISHED_ANDESITE;
+            Material deck = effectiveBridge ? Material.POLISHED_BLACKSTONE_BRICKS : Material.POLISHED_BLACKSTONE;
             if (tunnelStyle) {
                 for (int x = 0; x < 16; x++) {
                     for (int z = 6; z <= 9; z++) {
@@ -238,6 +244,9 @@ public class InfrastructureStage implements GenerationStage {
                 }
             }
         }
+        ensureContinuousHighwayDeck(context, y, true, effectiveBridge);
+        carveHighwayHeadroomToTerrain(context, y, true);
+        clearHighwayPortals(context, y, true);
 
         if (!tunnelStyle && shouldClearAboveHighway(profile)) {
             int clearFrom = y + (part == null ? 1 : Math.max(1, part.getDepth()));
@@ -245,7 +254,7 @@ public class InfrastructureStage implements GenerationStage {
         }
 
         if (profile.isHighwaySupports() && !tunnelStyle) {
-            Material support = effectiveBridge ? Material.STONE_BRICKS : Material.COBBLED_DEEPSLATE;
+            Material support = effectiveBridge ? Material.BLACKSTONE : Material.COBBLED_DEEPSLATE;
             applyHighwayTerrainFix(context, y, support, true, profile);
         }
     }
@@ -264,7 +273,7 @@ public class InfrastructureStage implements GenerationStage {
             // 历史 highway-Z 语义等价于当前 Transform 坐标系下的 ROTATE_270
             renderPart(context, part, y, false, Transform.ROTATE_270, profile);
         } else {
-            Material deck = effectiveBridge ? Material.SMOOTH_STONE : Material.POLISHED_ANDESITE;
+            Material deck = effectiveBridge ? Material.POLISHED_BLACKSTONE_BRICKS : Material.POLISHED_BLACKSTONE;
             if (tunnelStyle) {
                 for (int z = 0; z < 16; z++) {
                     for (int x = 6; x <= 9; x++) {
@@ -287,6 +296,9 @@ public class InfrastructureStage implements GenerationStage {
                 }
             }
         }
+        ensureContinuousHighwayDeck(context, y, false, effectiveBridge);
+        carveHighwayHeadroomToTerrain(context, y, false);
+        clearHighwayPortals(context, y, false);
 
         if (!tunnelStyle && shouldClearAboveHighway(profile)) {
             int clearFrom = y + (part == null ? 1 : Math.max(1, part.getDepth()));
@@ -294,7 +306,7 @@ public class InfrastructureStage implements GenerationStage {
         }
 
         if (profile.isHighwaySupports() && !tunnelStyle) {
-            Material support = effectiveBridge ? Material.STONE_BRICKS : Material.COBBLED_DEEPSLATE;
+            Material support = effectiveBridge ? Material.BLACKSTONE : Material.COBBLED_DEEPSLATE;
             applyHighwayTerrainFix(context, y, support, false, profile);
         }
     }
@@ -324,6 +336,141 @@ public class InfrastructureStage implements GenerationStage {
         }
     }
 
+    private void carveHighwayHeadroomToTerrain(GenerationContext context, int y, boolean xAxis) {
+        IDimensionInfo dimInfo = context.getDimensionInfo();
+        if (dimInfo == null) {
+            return;
+        }
+        ChunkHeightmap heightmap = dimInfo.getHeightmap(context.getChunkX(), context.getChunkZ());
+        if (heightmap == null) {
+            return;
+        }
+
+        int minY = minBuildHeight(context);
+        int maxY = maxBuildHeightExclusive(context) - 1;
+        int fromY = Math.max(minY, y + 1);
+        if (fromY > maxY) {
+            return;
+        }
+
+        if (xAxis) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 6; z <= 9; z++) {
+                    int terrainHeight = getTerrainHeight(heightmap, x, z, y);
+                    int clearTo = Math.min(maxY, Math.max(y + HIGHWAY_TUNNEL_CLEAR_HEIGHT, terrainHeight + 1));
+                    for (int clearY = fromY; clearY <= clearTo; clearY++) {
+                        context.setBlock(x, clearY, z, Material.AIR);
+                    }
+                }
+            }
+        } else {
+            for (int z = 0; z < 16; z++) {
+                for (int x = 6; x <= 9; x++) {
+                    int terrainHeight = getTerrainHeight(heightmap, x, z, y);
+                    int clearTo = Math.min(maxY, Math.max(y + HIGHWAY_TUNNEL_CLEAR_HEIGHT, terrainHeight + 1));
+                    for (int clearY = fromY; clearY <= clearTo; clearY++) {
+                        context.setBlock(x, clearY, z, Material.AIR);
+                    }
+                }
+            }
+        }
+    }
+
+    private void clearHighwayPortals(GenerationContext context, int y, boolean xAxis) {
+        int minY = minBuildHeight(context);
+        int maxY = maxBuildHeightExclusive(context) - 1;
+        int fromY = Math.max(minY, y + 1);
+        int toY = Math.min(maxY, y + HIGHWAY_TUNNEL_CLEAR_HEIGHT + 2);
+        if (fromY > toY) {
+            return;
+        }
+
+        if (xAxis) {
+            if (hasHighwayNeighbor(context, -1, 0, true)) {
+                clearHighwayPortalX(context, 0, fromY, toY);
+            }
+            if (hasHighwayNeighbor(context, 1, 0, true)) {
+                clearHighwayPortalX(context, 15, fromY, toY);
+            }
+            return;
+        }
+
+        if (hasHighwayNeighbor(context, 0, -1, false)) {
+            clearHighwayPortalZ(context, 0, fromY, toY);
+        }
+        if (hasHighwayNeighbor(context, 0, 1, false)) {
+            clearHighwayPortalZ(context, 15, fromY, toY);
+        }
+    }
+
+    private void clearHighwayPortalX(GenerationContext context, int edgeX, int fromY, int toY) {
+        for (int z = 6; z <= 9; z++) {
+            for (int y = fromY; y <= toY; y++) {
+                context.setBlock(edgeX, y, z, Material.AIR);
+            }
+        }
+    }
+
+    private void clearHighwayPortalZ(GenerationContext context, int edgeZ, int fromY, int toY) {
+        for (int x = 6; x <= 9; x++) {
+            for (int y = fromY; y <= toY; y++) {
+                context.setBlock(x, y, edgeZ, Material.AIR);
+            }
+        }
+    }
+
+    private boolean hasHighwayNeighbor(GenerationContext context, int dx, int dz, boolean xAxis) {
+        if (context.getDimensionInfo() == null) {
+            return false;
+        }
+        String dimension = context.getDimensionInfo().dimension() != null
+                ? context.getDimensionInfo().dimension()
+                : context.getWorldInfo().getName();
+        ChunkCoord neighbor = new ChunkCoord(
+                dimension,
+                context.getChunkX() + dx,
+                context.getChunkZ() + dz);
+        BuildingInfo neighborInfo = BuildingInfo.getBuildingInfo(neighbor, context.getDimensionInfo());
+        if (neighborInfo == null) {
+            return false;
+        }
+        return xAxis ? neighborInfo.highwayXLevel > 0 : neighborInfo.highwayZLevel > 0;
+    }
+
+    private void ensureContinuousHighwayDeck(GenerationContext context, int y, boolean xAxis, boolean bridgeStyle) {
+        Material deck = bridgeStyle ? Material.POLISHED_BLACKSTONE_BRICKS : Material.POLISHED_BLACKSTONE;
+        int minY = minBuildHeight(context);
+        int maxY = maxBuildHeightExclusive(context) - 1;
+        int fromY = Math.max(minY, y + 1);
+        int toY = Math.min(maxY, y + HIGHWAY_TUNNEL_CLEAR_HEIGHT);
+
+        if (xAxis) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 6; z <= 9; z++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (current == null || current == Material.AIR || current == Material.CAVE_AIR || current == Material.VOID_AIR) {
+                        context.setBlock(x, y, z, deck);
+                    }
+                    for (int airY = fromY; airY <= toY; airY++) {
+                        context.setBlock(x, airY, z, Material.AIR);
+                    }
+                }
+            }
+        } else {
+            for (int z = 0; z < 16; z++) {
+                for (int x = 6; x <= 9; x++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (current == null || current == Material.AIR || current == Material.CAVE_AIR || current == Material.VOID_AIR) {
+                        context.setBlock(x, y, z, deck);
+                    }
+                    for (int airY = fromY; airY <= toY; airY++) {
+                        context.setBlock(x, airY, z, Material.AIR);
+                    }
+                }
+            }
+        }
+    }
+
     private boolean shouldClearAboveHighway(LostCityProfile profile) {
         if (profile == null) {
             return true;
@@ -337,14 +484,10 @@ public class InfrastructureStage implements GenerationStage {
     }
 
     private boolean isClearableAboveHighway(Material material) {
-        if (material == null || material == Material.AIR || material == Material.CAVE_AIR || material == Material.VOID_AIR) {
-            return false;
-        }
-        String name = material.name();
-        if (name.endsWith("_LEAVES") || name.endsWith("_LOG") || name.endsWith("_WOOD")) {
-            return false;
-        }
-        return true;
+        return material != null
+                && material != Material.AIR
+                && material != Material.CAVE_AIR
+                && material != Material.VOID_AIR;
     }
 
     private void applyHighwayTerrainFix(GenerationContext context, int y, Material support, boolean xAxis, LostCityProfile profile) {
@@ -404,6 +547,8 @@ public class InfrastructureStage implements GenerationStage {
         if (profile.isBridgeSupports()) {
             applyRailTerrainFix(context, y, Material.STONE_BRICKS, true, profile);
         }
+        clearRailPortals(context, y, true, profile);
+        clearRailTunnel(context, y, true);
     }
 
     private void drawRailZ(GenerationContext context,
@@ -426,6 +571,8 @@ public class InfrastructureStage implements GenerationStage {
         if (profile.isBridgeSupports()) {
             applyRailTerrainFix(context, y, Material.STONE_BRICKS, false, profile);
         }
+        clearRailPortals(context, y, false, profile);
+        clearRailTunnel(context, y, false);
     }
 
     private void drawRailXSlope(GenerationContext context,
@@ -516,6 +663,105 @@ public class InfrastructureStage implements GenerationStage {
 
     private int getTerrainHeight(ChunkHeightmap heightmap, int x, int z, int fallback) {
         return TerrainEmbeddingEngine.terrainHeight(heightmap, x, z, fallback);
+    }
+
+    private void clearRailTunnel(GenerationContext context, int railY, boolean xAxis) {
+        IDimensionInfo dimInfo = context.getDimensionInfo();
+        ChunkHeightmap heightmap = dimInfo == null ? null : dimInfo.getHeightmap(context.getChunkX(), context.getChunkZ());
+        int minY = minBuildHeight(context);
+        int maxY = maxBuildHeightExclusive(context) - 1;
+        int fromY = Math.max(minY, railY + 1);
+        if (xAxis) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = RAIL_TUNNEL_INNER_MIN; z <= RAIL_TUNNEL_INNER_MAX; z++) {
+                    int terrainHeight = getTerrainHeight(heightmap, x, z, railY);
+                    int toY = Math.min(maxY, Math.max(railY + RAIL_TUNNEL_CLEAR_HEIGHT - 1, terrainHeight + 1));
+                    if (fromY > toY) {
+                        continue;
+                    }
+                    for (int y = fromY; y <= toY; y++) {
+                        Material current = context.getBlockType(x, y, z);
+                        if (!isRailMaterial(current)) {
+                            context.setBlock(x, y, z, Material.AIR);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int z = 0; z < 16; z++) {
+                for (int x = RAIL_TUNNEL_INNER_MIN; x <= RAIL_TUNNEL_INNER_MAX; x++) {
+                    int terrainHeight = getTerrainHeight(heightmap, x, z, railY);
+                    int toY = Math.min(maxY, Math.max(railY + RAIL_TUNNEL_CLEAR_HEIGHT - 1, terrainHeight + 1));
+                    if (fromY > toY) {
+                        continue;
+                    }
+                    for (int y = fromY; y <= toY; y++) {
+                        Material current = context.getBlockType(x, y, z);
+                        if (!isRailMaterial(current)) {
+                            context.setBlock(x, y, z, Material.AIR);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isRailMaterial(Material material) {
+        return material == Material.RAIL
+                || material == Material.POWERED_RAIL
+                || material == Material.DETECTOR_RAIL
+                || material == Material.ACTIVATOR_RAIL;
+    }
+
+    private void clearRailPortals(GenerationContext context, int railY, boolean xAxis, LostCityProfile profile) {
+        int minY = minBuildHeight(context);
+        int maxY = maxBuildHeightExclusive(context) - 1;
+        int fromY = Math.max(minY, railY + 1);
+        int toY = Math.min(maxY, railY + RAIL_TUNNEL_CLEAR_HEIGHT + 2);
+        if (fromY > toY) {
+            return;
+        }
+        if (xAxis) {
+            clearRailPortalX(context, 0, fromY, toY);
+            clearRailPortalX(context, 15, fromY, toY);
+        } else {
+            clearRailPortalZ(context, 0, fromY, toY);
+            clearRailPortalZ(context, 15, fromY, toY);
+        }
+    }
+
+    private void clearRailPortalX(GenerationContext context, int edgeX, int fromY, int toY) {
+        for (int z = RAIL_TUNNEL_INNER_MIN; z <= RAIL_TUNNEL_INNER_MAX; z++) {
+            for (int y = fromY; y <= toY; y++) {
+                Material current = context.getBlockType(edgeX, y, z);
+                if (!isRailMaterial(current)) {
+                    context.setBlock(edgeX, y, z, Material.AIR);
+                }
+            }
+        }
+    }
+
+    private void clearRailPortalZ(GenerationContext context, int edgeZ, int fromY, int toY) {
+        for (int x = RAIL_TUNNEL_INNER_MIN; x <= RAIL_TUNNEL_INNER_MAX; x++) {
+            for (int y = fromY; y <= toY; y++) {
+                Material current = context.getBlockType(x, y, edgeZ);
+                if (!isRailMaterial(current)) {
+                    context.setBlock(x, y, edgeZ, Material.AIR);
+                }
+            }
+        }
+    }
+
+    private boolean hasRailNeighbor(GenerationContext context, int dx, int dz, LostCityProfile profile) {
+        if (profile == null || context.getDimensionInfo() == null || context.getWorldInfo() == null) {
+            return false;
+        }
+        ChunkCoord neighbor = new ChunkCoord(
+                context.getWorldInfo().getName(),
+                context.getChunkX() + dx,
+                context.getChunkZ() + dz);
+        Railway.RailChunkInfo info = Railway.getRailChunkType(neighbor, context.getDimensionInfo(), profile);
+        return info != null && info.getType() != Railway.RailChunkType.NONE;
     }
 
     private int minBuildHeight(GenerationContext context) {
