@@ -39,11 +39,10 @@ import java.util.Set;
  * 区块生成上下文
  */
 public class GenerationContext {
-    private static final int MOSS_WEIGHT_PERCENT = 30;
-    private static final int MOSSY_COBBLE_WEIGHT_PERCENT = 10;
-    private static final int COBBLE_WEIGHT_PERCENT = 10;
-    private static final int ORIGINAL_STYLE_WEIGHT_PERCENT = 30;
-    private static final int CRACKED_BRICK_WEIGHT_PERCENT = 10;
+    private static final int MOSS_WEIGHT_PERCENT = 50;
+    private static final int MOSSY_COBBLE_WEIGHT_PERCENT = 5;
+    private static final int STONE_BRICK_WEIGHT_PERCENT = 40;
+    private static final int CRACKED_BRICK_WEIGHT_PERCENT = 3;
 
     private final WorldInfo worldInfo;
     private final IDimensionInfo dimensionInfo;
@@ -574,7 +573,7 @@ public class GenerationContext {
     private Material mossReplacement(int localX, int y, int localZ, Material source) {
         return switch (source) {
             case MOSS_BLOCK, MOSSY_STONE_BRICKS, MOSSY_COBBLESTONE ->
-                    pickWeatheredBlock(localX, y, localZ, source.name().toLowerCase(Locale.ROOT), source);
+                    pickWeatheredBlock(localX, y, localZ, source.name().toLowerCase(Locale.ROOT));
             case MOSSY_STONE_BRICK_SLAB -> Material.STONE_BRICK_SLAB;
             case MOSSY_STONE_BRICK_STAIRS -> Material.STONE_BRICK_STAIRS;
             case MOSSY_STONE_BRICK_WALL -> Material.STONE_BRICK_WALL;
@@ -588,12 +587,7 @@ public class GenerationContext {
     private String mossReplacement(int localX, int y, int localZ, String path) {
         return switch (path) {
             case "moss_block", "mossy_stone_bricks", "mossy_cobblestone" -> {
-                Material source = switch (path) {
-                    case "moss_block" -> Material.MOSS_BLOCK;
-                    case "mossy_stone_bricks" -> Material.MOSSY_STONE_BRICKS;
-                    default -> Material.MOSSY_COBBLESTONE;
-                };
-                Material picked = pickWeatheredBlock(localX, y, localZ, path, source);
+                Material picked = pickWeatheredBlock(localX, y, localZ, path);
                 yield picked == null ? null : picked.name().toLowerCase(Locale.ROOT);
             }
             case "mossy_stone_brick_slab" -> "stone_brick_slab";
@@ -606,7 +600,7 @@ public class GenerationContext {
         };
     }
 
-    private Material pickWeatheredBlock(int localX, int y, int localZ, String key, Material source) {
+    private Material pickWeatheredBlock(int localX, int y, int localZ, String key) {
         int roll = weatheredRoll(localX, y, localZ, key);
         int cursor = MOSS_WEIGHT_PERCENT;
         if (roll < cursor) {
@@ -616,31 +610,15 @@ public class GenerationContext {
         if (roll < cursor) {
             return Material.MOSSY_COBBLESTONE;
         }
-        cursor += COBBLE_WEIGHT_PERCENT;
+        cursor += STONE_BRICK_WEIGHT_PERCENT;
         if (roll < cursor) {
-            return Material.COBBLESTONE;
-        }
-        cursor += ORIGINAL_STYLE_WEIGHT_PERCENT;
-        if (roll < cursor) {
-            return originalStyleFallback(localX, y, localZ, source);
+            return Material.STONE_BRICKS;
         }
         cursor += CRACKED_BRICK_WEIGHT_PERCENT;
         if (roll < cursor) {
             return Material.CRACKED_STONE_BRICKS;
         }
         return Material.MOSSY_STONE_BRICKS;
-    }
-
-    private Material originalStyleFallback(int localX, int y, int localZ, Material source) {
-        if (source == Material.MOSSY_COBBLESTONE) {
-            return Material.COBBLESTONE;
-        }
-        int styleRoll = weatheredRoll(localX, y, localZ, "style:" + source.name()) % 3;
-        return switch (styleRoll) {
-            case 0 -> Material.STONE_BRICKS;
-            case 1 -> Material.BRICKS;
-            default -> Material.STONE;
-        };
     }
 
     /**

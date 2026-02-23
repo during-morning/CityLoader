@@ -823,11 +823,7 @@ public class CityCoreStage implements GenerationStage {
         int topY = info.getCityGroundLevel() - Math.max(0, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT - 1;
         int bottomY = Math.max(minY, topY - GenerationHeightModel.FLOOR_HEIGHT * 8);
         int probeTopY = Math.min(context.getWorldInfo().getMaxHeight() - 1, info.getMaxHeight() + 2);
-        Material support = context.resolveMaterial(
-                context.getDimensionInfo() == null || context.getDimensionInfo().getProfile() == null
-                        ? null
-                        : context.getDimensionInfo().getProfile().getBaseBlock(),
-                Material.STONE);
+        Material support = Material.STONE;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int lowestSolidY = -1;
@@ -1367,7 +1363,7 @@ public class CityCoreStage implements GenerationStage {
         int clearCeiling = Math.max(baseY + maxLower, context.getBuildingInfo().getMaxHeight() + 1);
 
         boolean[][] supportMask = buildSupportMask(baseMaterials);
-        Material defaultSupport = Material.STONE_BRICKS;
+        Material defaultSupport = Material.STONE;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 Material support = baseMaterials[x][z];
