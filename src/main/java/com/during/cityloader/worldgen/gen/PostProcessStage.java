@@ -40,6 +40,7 @@ public class PostProcessStage implements GenerationStage {
         executePalettePostTodo(context, info);
         executePostTodo(info);
         removeAllSpawners(context, info);
+        repairPaneConnectivity(context, info);
         cleanupGroundVegetation(context, info);
     }
 
@@ -113,6 +114,58 @@ public class PostProcessStage implements GenerationStage {
                 }
             }
         }
+    }
+
+    private void repairPaneConnectivity(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.isCity) {
+            return;
+        }
+        int minY = Math.max(context.getWorldInfo().getMinHeight(), info.getCityGroundLevel() - 20);
+        int maxY = Math.min(context.getWorldInfo().getMaxHeight() - 1, info.getMaxHeight() + 24);
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = minY; y <= maxY; y++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (!isPaneLike(current)) {
+                        continue;
+                    }
+                    boolean north = shouldConnectPane(context, x, y, z - 1);
+                    boolean south = shouldConnectPane(context, x, y, z + 1);
+                    boolean west = shouldConnectPane(context, x - 1, y, z);
+                    boolean east = shouldConnectPane(context, x + 1, y, z);
+                    String id = current.name().toLowerCase(Locale.ROOT);
+                    String definition = "minecraft:" + id
+                            + "[north=" + north
+                            + ",south=" + south
+                            + ",west=" + west
+                            + ",east=" + east
+                            + ",waterlogged=false]";
+                    context.setBlock(x, y, z, definition);
+                }
+            }
+        }
+    }
+
+    private boolean isPaneLike(Material material) {
+        if (material == null) {
+            return false;
+        }
+        return material == Material.IRON_BARS || material.name().endsWith("_PANE");
+    }
+
+    private boolean shouldConnectPane(GenerationContext context, int x, int y, int z) {
+        Material neighbor = context.getBlockType(x, y, z);
+        if (neighbor == null || isAirLike(neighbor)) {
+            return false;
+        }
+        if (isPaneLike(neighbor)) {
+            return true;
+        }
+        String name = neighbor.name();
+        if (name.contains("GLASS")) {
+            return true;
+        }
+        return neighbor.isOccluding() || name.endsWith("_WALL") || name.endsWith("_FENCE");
     }
 
     private void applyTagTodo(GenerationContext context, BuildingInfo.PalettePostTodo todo) {

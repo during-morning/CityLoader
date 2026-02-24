@@ -2,7 +2,7 @@
 
 Paper 1.21+ 城市生成插件，目标是把 LostCities 风格迁移到 Bukkit/Paper 生态，并支持季节适配。
 
-- 当前版本: `1.4.0-SURFACE-SHIFT`
+- 当前版本: `1.4.1-HORDE-TUNING`
 - 主类: `com.during.cityloader.CityLoaderPlugin`
 - 命令前缀: `/cityloader`（别名: `/cl`, `/city`）
 
@@ -116,8 +116,8 @@ mvn clean package -DskipTests
 
 产物:
 
-- `target/cityloader-1.4.0-SURFACE-SHIFT.jar`（可部署）
-- `target/original-cityloader-1.4.0-SURFACE-SHIFT.jar`（未重定位原始产物）
+- `target/cityloader-1.4.1-HORDE-TUNING.jar`（可部署）
+- `target/original-cityloader-1.4.1-HORDE-TUNING.jar`（未重定位原始产物）
 
 ### 6.2 测试
 
@@ -188,4 +188,4 @@ mvn -Dtest=CityCoreStageSurfaceEmbeddingTest test
 
 ---
 
-最后更新: `2026-02-23`
+最后更新: `2026-02-23`（v1.4.1-HORDE-TUNING）

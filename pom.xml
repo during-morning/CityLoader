@@ -6,7 +6,7 @@
 
     <groupId>com.during</groupId>
     <artifactId>cityloader</artifactId>
-    <version>1.4.0-SURFACE-SHIFT</version>
+    <version>1.4.1-HORDE-TUNING</version>
     <packaging>jar</packaging>
 
     <name>CityLoader</name>

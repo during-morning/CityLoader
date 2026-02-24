@@ -130,4 +130,80 @@ class BridgeStageTest {
 
         verify(region, atLeastOnce()).setBlockData(anyInt(), eq(82), anyInt(), any());
     }
+
+    @Test
+    @DisplayName("非城市区块在邻接桥梁时应补齐桥面避免断桥")
+    void shouldGenerateBridgeWhenNeighborHasBridge() {
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world");
+        when(world.getSeaLevel()).thenReturn(63);
+        when(world.getMinHeight()).thenReturn(-64);
+        when(world.getMaxHeight()).thenReturn(320);
+        when(world.getSeed()).thenReturn(1357L);
+
+        IDimensionInfo provider = mock(IDimensionInfo.class);
+        LostCityProfile profile = new LostCityProfile("test");
+        profile.setCityChance(1.0);
+        profile.setBridgeSupports(false);
+        profile.setGroundLevel(70);
+        when(provider.getProfile()).thenReturn(profile);
+        when(provider.getSeed()).thenReturn(1357L);
+        when(provider.getWorld()).thenReturn(world);
+        when(provider.getBiome(anyInt(), anyInt(), anyInt())).thenReturn(Biome.PLAINS);
+        when(provider.dimension()).thenReturn("world");
+        when(provider.getHeightmap(any(ChunkCoord.class))).thenAnswer(invocation -> {
+            ChunkHeightmap heightmap = new ChunkHeightmap();
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    heightmap.setHeight(x, z, 64);
+                }
+            }
+            return heightmap;
+        });
+        when(provider.getHeightmap(anyInt(), anyInt())).thenAnswer(invocation -> {
+            ChunkHeightmap heightmap = new ChunkHeightmap();
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    heightmap.setHeight(x, z, 64);
+                }
+            }
+            return heightmap;
+        });
+
+        BuildingInfo info = BuildingInfo.getBuildingInfo(new ChunkCoord("world", 0, 0), provider);
+        info.isCity = false;
+        info.xBridge = false;
+        info.highwayXLevel = 0;
+        info.zBridge = false;
+        info.highwayZLevel = 0;
+
+        BuildingInfo west = info.getXmin();
+        west.isCity = true;
+        west.xBridge = true;
+        west.highwayXLevel = 82;
+
+        WorldInfo worldInfo = mock(WorldInfo.class);
+        when(worldInfo.getName()).thenReturn("world");
+        when(worldInfo.getEnvironment()).thenReturn(World.Environment.NORMAL);
+        when(worldInfo.getMinHeight()).thenReturn(-64);
+        when(worldInfo.getMaxHeight()).thenReturn(320);
+
+        LimitedRegion region = mock(LimitedRegion.class);
+        when(region.isInRegion(anyInt(), anyInt(), anyInt())).thenReturn(true);
+
+        GenerationContext context = new GenerationContext(
+                worldInfo,
+                region,
+                provider,
+                info,
+                new Random(7L),
+                0,
+                0);
+
+        new BridgeStage().generate(context);
+        context.flush();
+
+        verify(region, atLeastOnce()).setBlockData(anyInt(), eq(82), anyInt(), any());
+        verify(region, atLeastOnce()).setBlockData(anyInt(), eq(81), anyInt(), any());
+    }
 }

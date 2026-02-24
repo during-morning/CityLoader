@@ -484,6 +484,13 @@ public class GenerationContext {
                 return false;
             }
             spawner.setSpawnedType(type);
+            // 提高刷怪压迫感：更短延迟、更高单次数量、更宽触发范围
+            spawner.setMinSpawnDelay(80);
+            spawner.setMaxSpawnDelay(220);
+            spawner.setSpawnCount(6);
+            spawner.setMaxNearbyEntities(20);
+            spawner.setRequiredPlayerRange(24);
+            spawner.setSpawnRange(6);
             return true;
         });
     }
@@ -1060,6 +1067,9 @@ public class GenerationContext {
         String normalized = value.toLowerCase(Locale.ROOT);
         int colon = normalized.indexOf(':');
         String simple = colon >= 0 ? normalized.substring(colon + 1) : normalized;
+        if ("engineer_zombie".equals(simple) || "engineer".equals(simple)) {
+            return EntityType.ZOMBIE_VILLAGER;
+        }
         EntityType type = EntityType.fromName(simple);
         if (type == null) {
             try {

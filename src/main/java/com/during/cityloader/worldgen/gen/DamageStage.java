@@ -191,12 +191,12 @@ public final class DamageStage implements GenerationStage {
                     }
 
                     float strength = 1.0f - (distance / Math.max(1.0f, radius));
-                    float destroyChance = destructive ? strength * 0.28f : strength * 0.12f;
-                    float damageChance = strength * 0.45f;
+                    float destroyChance = 0.0f;
+                    float damageChance = (destructive ? 0.58f : 0.45f) * strength;
 
                     float roll = random.nextFloat();
                     if (roll < destroyChance) {
-                        replaceWithDestroyed(context, x, y, z);
+                        replaceWithDestroyed(context, damageMap, x, y, z);
                         continue;
                     }
                     if (roll < destroyChance + damageChance) {
@@ -207,7 +207,11 @@ public final class DamageStage implements GenerationStage {
         }
     }
 
-    private void replaceWithDestroyed(GenerationContext context, int localX, int y, int localZ) {
+    private void replaceWithDestroyed(GenerationContext context,
+                                      Map<Material, Material> damageMap,
+                                      int localX,
+                                      int y,
+                                      int localZ) {
         Material current = getType(context, localX, y, localZ);
         if (current == null || current == Material.BEDROCK || current == Material.BARRIER) {
             return;
@@ -215,7 +219,16 @@ public final class DamageStage implements GenerationStage {
         if (isProtectedForDamage(context, current, y)) {
             return;
         }
-        Material replacement = y <= context.getBuildingInfo().waterLevel ? Material.WATER : Material.AIR;
+        Material replacement = null;
+        if (damageMap != null) {
+            replacement = damageMap.get(current);
+        }
+        if (replacement == null) {
+            replacement = DEFAULT_DAMAGE_MAP.get(current);
+        }
+        if (replacement == null || replacement == Material.AIR || replacement == Material.CAVE_AIR || replacement == Material.VOID_AIR) {
+            replacement = solidDestroyedReplacement(current);
+        }
         context.setBlock(localX, y, localZ, replacement);
     }
 
@@ -249,9 +262,6 @@ public final class DamageStage implements GenerationStage {
         if (current == null) {
             return true;
         }
-        if (y <= context.getBuildingInfo().getCityGroundLevel() + 1) {
-            return true;
-        }
 
         String name = current.name();
         if (name.contains("RAIL")) {
@@ -273,6 +283,30 @@ public final class DamageStage implements GenerationStage {
                     || current == Material.STONE_SLAB;
         }
         return false;
+    }
+
+    private Material solidDestroyedReplacement(Material current) {
+        if (current == null || current == Material.AIR || current == Material.CAVE_AIR || current == Material.VOID_AIR) {
+            return Material.COBBLESTONE;
+        }
+
+        String name = current.name();
+        if (name.contains("DEEPSLATE")) {
+            return Material.COBBLED_DEEPSLATE;
+        }
+        if (name.contains("STONE_BRICK") || name.contains("BRICKS")) {
+            return Material.CRACKED_STONE_BRICKS;
+        }
+        if (name.contains("GLASS")) {
+            return Material.IRON_BARS;
+        }
+        if (name.contains("WOOD") || name.contains("PLANK") || name.contains("LOG")) {
+            return Material.OAK_PLANKS;
+        }
+        if (name.contains("CONCRETE")) {
+            return Material.STONE;
+        }
+        return Material.COBBLESTONE;
     }
 
     private Material getType(GenerationContext context, int localX, int y, int localZ) {
@@ -330,9 +364,9 @@ public final class DamageStage implements GenerationStage {
         map.put(Material.DEEPSLATE_TILES, Material.CRACKED_DEEPSLATE_TILES);
         map.put(Material.CRACKED_DEEPSLATE_TILES, Material.COBBLED_DEEPSLATE);
 
-        map.put(Material.GLASS, Material.AIR);
-        map.put(Material.GLASS_PANE, Material.AIR);
-        map.put(Material.TINTED_GLASS, Material.AIR);
+        map.put(Material.GLASS, Material.IRON_BARS);
+        map.put(Material.GLASS_PANE, Material.IRON_BARS);
+        map.put(Material.TINTED_GLASS, Material.IRON_BARS);
 
         return map;
     }

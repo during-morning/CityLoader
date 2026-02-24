@@ -172,6 +172,18 @@ profiles:
       building-max-cellars: 3
       building-doorway-chance: 0.6
       building-front-chance: 0.2
+      allow-cross-chunk-all-buildings: true
+      footprint-weight-1x1: 0
+      footprint-weight-2x2: 35
+      footprint-weight-3x2: 35
+      footprint-weight-4x4: 30
+      target-building-coverage: 0.45
+      street-connectivity-priority-high: true
+      fallback-to-1x1-on-conflict: false
+      building-air-clearance-top-buffer: 6
+      force-full-building-surface-smoothing: true
+      floor-zero-hole-enforcement: true
+      floor-moss-enabled: true
       park-chance: 0.2
       corridor-chance: 0.7
       bridge-chance: 0.7

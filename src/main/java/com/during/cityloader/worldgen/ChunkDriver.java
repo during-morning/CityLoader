@@ -7,6 +7,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.MultipleFacing;
+import org.bukkit.block.data.type.GlassPane;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.block.data.type.Stairs;
@@ -358,6 +360,8 @@ public class ChunkDriver {
             return correctWall((Wall) blockData, x, y, z);
         } else if (blockData instanceof Fence) {
             return correctFence((Fence) blockData, x, y, z);
+        } else if (blockData instanceof GlassPane) {
+            return correctGlassPane((GlassPane) blockData, x, y, z);
         }
         if (blockData instanceof Stairs) {
             return correctStairs((Stairs) blockData, x, y, z);
@@ -514,6 +518,37 @@ public class ChunkDriver {
         }
 
         return fence;
+    }
+
+    private BlockData correctGlassPane(GlassPane pane, int x, int y, int z) {
+        pane = (GlassPane) pane.clone();
+        setPaneFace(pane, BlockFace.NORTH, canAttachPane(getBlockAbsolute(x, y, z - 1)));
+        setPaneFace(pane, BlockFace.SOUTH, canAttachPane(getBlockAbsolute(x, y, z + 1)));
+        setPaneFace(pane, BlockFace.WEST, canAttachPane(getBlockAbsolute(x - 1, y, z)));
+        setPaneFace(pane, BlockFace.EAST, canAttachPane(getBlockAbsolute(x + 1, y, z)));
+        return pane;
+    }
+
+    private void setPaneFace(GlassPane pane, BlockFace face, boolean enabled) {
+        if (pane instanceof MultipleFacing multipleFacing
+                && multipleFacing.getAllowedFaces().contains(face)) {
+            multipleFacing.setFace(face, enabled);
+        }
+    }
+
+    private boolean canAttachPane(BlockData neighbor) {
+        if (neighbor == null) {
+            return false;
+        }
+        Material material = neighbor.getMaterial();
+        if (material == Material.AIR || material == Material.CAVE_AIR || material == Material.VOID_AIR) {
+            return false;
+        }
+        return material.isOccluding()
+                || neighbor instanceof GlassPane
+                || neighbor instanceof Fence
+                || neighbor instanceof Wall
+                || neighbor instanceof Gate;
     }
     
     /**

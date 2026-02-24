@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -155,6 +156,37 @@ class CityCoreStageSurfaceEmbeddingTest {
         verify(context, never()).setBlock(eq(15), anyInt(), anyInt(), eq(Material.AIR));
         verify(context, never()).setBlock(anyInt(), anyInt(), eq(0), eq(Material.AIR));
         verify(context, never()).setBlock(anyInt(), anyInt(), eq(15), eq(Material.AIR));
+    }
+
+    @Test
+    @DisplayName("建筑区应执行全区地表嵌合，不仅边缘列")
+    void shouldApplySurfaceEmbeddingOnInnerColumnsForBuildingChunks() throws Exception {
+        IDimensionInfo provider = mockProviderWithNeighborHeights(70, 58);
+        BuildingInfo center = BuildingInfo.getBuildingInfo(new ChunkCoord("world", 0, 0), provider);
+        center.isCity = true;
+        center.hasBuilding = true;
+        center.hasStreet = false;
+        center.groundLevel = 70;
+        center.cityLevel = 0;
+
+        GenerationContext context = mock(GenerationContext.class);
+        WorldInfo worldInfo = mock(WorldInfo.class);
+        when(worldInfo.getMinHeight()).thenReturn(-64);
+        when(worldInfo.getMaxHeight()).thenReturn(320);
+        when(context.getWorldInfo()).thenReturn(worldInfo);
+        when(context.getDimensionInfo()).thenReturn(provider);
+        when(context.getBuildingInfo()).thenReturn(center);
+        when(context.getChunkX()).thenReturn(0);
+        when(context.getChunkZ()).thenReturn(0);
+        when(context.resolveMaterial(any(), eq(Material.STONE))).thenReturn(Material.STONE);
+        when(context.getBlockType(anyInt(), anyInt(), anyInt())).thenReturn(Material.AIR);
+
+        Method method = CityCoreStage.class.getDeclaredMethod(
+                "prepareCitySurface", GenerationContext.class, BuildingInfo.class);
+        method.setAccessible(true);
+        method.invoke(new CityCoreStage(), context, center);
+
+        verify(context, atLeastOnce()).setBlock(eq(8), anyInt(), eq(8), eq(Material.STONE));
     }
 
     private int[][] invokeStreetTargets(BuildingInfo info, int fallbackY) throws Exception {

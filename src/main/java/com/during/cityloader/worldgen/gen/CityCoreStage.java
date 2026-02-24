@@ -75,6 +75,8 @@ public class CityCoreStage implements GenerationStage {
         } else {
             generateVacantLot(context);
         }
+
+        enforceFloorIntegrity(context, info);
     }
 
     private void generateBuilding(GenerationContext context) {
@@ -97,6 +99,8 @@ public class CityCoreStage implements GenerationStage {
             compactFoundationMass(context, info);
             purgeBuildingWater(context, info);
             sealExposedBuildingEdges(context, info);
+            openFootprintInternalSeams(context, info);
+            healSliceArtifacts(context, info);
         }
     }
 
@@ -114,10 +118,12 @@ public class CityCoreStage implements GenerationStage {
         }
         int minY = context.getWorldInfo().getMinHeight();
         int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        LostCityProfile profile = getProfile(context);
+        int topBuffer = profile == null ? 6 : profile.getBuildingAirClearanceTopBuffer();
         int cellars = Math.max(0, info.cellars);
         int extraBelowClear = cellars > 0 ? GenerationHeightModel.FLOOR_HEIGHT : 0;
         int clearFrom = Math.max(minY, info.getCityGroundLevel() - cellars * GenerationHeightModel.FLOOR_HEIGHT - extraBelowClear);
-        int clearTo = maxY;
+        int clearTo = Math.min(maxY, info.getMaxHeight() + Math.max(0, topBuffer));
         if (clearFrom > clearTo) {
             return;
         }
@@ -156,27 +162,87 @@ public class CityCoreStage implements GenerationStage {
         if (!isBuildingChunk(info.getXmin())) {
             for (int z = 0; z < 16; z++) {
                 sealEdgeColumn(context, 0, z, 1, z, fromY, toY, edgeFill);
+                reinforceEdgeBase(context, 0, z, fromY - 1, edgeFill);
             }
         }
         if (!isBuildingChunk(info.getXmax())) {
             for (int z = 0; z < 16; z++) {
                 sealEdgeColumn(context, 15, z, 14, z, fromY, toY, edgeFill);
+                reinforceEdgeBase(context, 15, z, fromY - 1, edgeFill);
             }
         }
         if (!isBuildingChunk(info.getZmin())) {
             for (int x = 0; x < 16; x++) {
                 sealEdgeColumn(context, x, 0, x, 1, fromY, toY, edgeFill);
+                reinforceEdgeBase(context, x, 0, fromY - 1, edgeFill);
             }
         }
         if (!isBuildingChunk(info.getZmax())) {
             for (int x = 0; x < 16; x++) {
                 sealEdgeColumn(context, x, 15, x, 14, fromY, toY, edgeFill);
+                reinforceEdgeBase(context, x, 15, fromY - 1, edgeFill);
             }
         }
     }
 
     private boolean isBuildingChunk(BuildingInfo info) {
         return info != null && info.isCity && info.hasBuilding;
+    }
+
+    private void openFootprintInternalSeams(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding || info.multiBuilding != null) {
+            return;
+        }
+        if (info.getFootprintChunkWidth() <= 1 && info.getFootprintChunkDepth() <= 1) {
+            return;
+        }
+
+        int minY = context.getWorldInfo().getMinHeight();
+        int maxY = context.getWorldInfo().getMaxHeight() - 1;
+        int fromY = Math.max(minY, info.getCityGroundLevel() - Math.max(0, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT + 1);
+        int toY = Math.min(maxY, info.getMaxHeight() - 1);
+        if (fromY > toY) {
+            return;
+        }
+
+        if (sameFootprintGroup(info, info.getXmin())) {
+            clearSeamX(context, 0, fromY, toY);
+        }
+        if (sameFootprintGroup(info, info.getXmax())) {
+            clearSeamX(context, 15, fromY, toY);
+        }
+        if (sameFootprintGroup(info, info.getZmin())) {
+            clearSeamZ(context, 0, fromY, toY);
+        }
+        if (sameFootprintGroup(info, info.getZmax())) {
+            clearSeamZ(context, 15, fromY, toY);
+        }
+    }
+
+    private boolean sameFootprintGroup(BuildingInfo info, BuildingInfo adjacent) {
+        if (info == null || adjacent == null || !adjacent.hasBuilding || adjacent.multiBuilding != null) {
+            return false;
+        }
+        return info.getFootprintAnchorChunkX() == adjacent.getFootprintAnchorChunkX()
+                && info.getFootprintAnchorChunkZ() == adjacent.getFootprintAnchorChunkZ()
+                && info.getFootprintChunkWidth() == adjacent.getFootprintChunkWidth()
+                && info.getFootprintChunkDepth() == adjacent.getFootprintChunkDepth();
+    }
+
+    private void clearSeamX(GenerationContext context, int x, int fromY, int toY) {
+        for (int z = 2; z <= 13; z++) {
+            for (int y = fromY; y <= toY; y++) {
+                context.setBlock(x, y, z, Material.AIR);
+            }
+        }
+    }
+
+    private void clearSeamZ(GenerationContext context, int z, int fromY, int toY) {
+        for (int x = 2; x <= 13; x++) {
+            for (int y = fromY; y <= toY; y++) {
+                context.setBlock(x, y, z, Material.AIR);
+            }
+        }
     }
 
     private void sealEdgeColumn(GenerationContext context,
@@ -198,6 +264,18 @@ public class CityCoreStage implements GenerationStage {
             }
             Material fill = isReplaceableForFacade(inner) ? fallback : inner;
             context.setBlock(edgeX, y, edgeZ, fill);
+        }
+    }
+
+    private void reinforceEdgeBase(GenerationContext context, int x, int z, int startY, Material fill) {
+        int minY = context.getWorldInfo().getMinHeight();
+        for (int y = Math.min(startY, context.getWorldInfo().getMaxHeight() - 1); y >= minY; y--) {
+            Material current = context.getBlockType(x, y, z);
+            if (isAir(current) || current == Material.WATER || current == Material.LAVA || current == Material.BUBBLE_COLUMN) {
+                context.setBlock(x, y, z, fill);
+                continue;
+            }
+            break;
         }
     }
 
@@ -250,6 +328,7 @@ public class CityCoreStage implements GenerationStage {
 
         int cityGround = info.getCityGroundLevel();
         boolean buildingChunk = info.hasBuilding;
+        boolean forceFullSmoothing = profile == null || profile.isForceFullBuildingSurfaceSmoothing();
         int[][] smoothedTargets = buildingChunk
                 ? buildBuildingSurfaceTargets(context, info, cityGround - 1)
                 : buildStreetSurfaceTargets(context, info, cityGround);
@@ -268,33 +347,19 @@ public class CityCoreStage implements GenerationStage {
             for (int z = 0; z < 16; z++) {
                 int terrainHeight = TerrainEmbeddingEngine.terrainHeight(heightmap, x, z, cityGround);
                 if (buildingChunk) {
-                    // LostCities 风格：建筑区仅在边缘做轻微过渡，内部不做大规模切地形。
                     int edgeDistance = Math.min(Math.min(x, 15 - x), Math.min(z, 15 - z));
-                    if (edgeDistance <= BUILDING_EDGE_TRANSITION_BAND) {
+                    if (forceFullSmoothing || edgeDistance <= BUILDING_EDGE_TRANSITION_BAND) {
                         int targetY = smoothedTargets == null ? cityGround - 1 : smoothedTargets[x][z];
-                        int carveDepth = Math.max(3, Math.min(BUILDING_APRON_MAX_DROP + 2, maxLower + 2));
-                        TerrainEmbeddingEngine.embedSurfaceColumnLimited(
-                                context,
-                                x,
-                                z,
-                                terrainHeight,
-                                targetY,
-                                base,
-                                Math.min(2, maxRaise),
-                                carveDepth);
+                        int carveDepth = Math.max(BUILDING_MIN_CARVE_DEPTH, maxLower + BUILDING_APRON_MAX_DROP);
+                        TerrainEmbeddingEngine.embedSurfaceColumnSymmetricLimited(
+                                context, x, z, terrainHeight, targetY, base,
+                                Math.max(2, maxRaise), carveDepth);
                     }
                 } else {
                     int targetY = smoothedTargets == null ? cityGround : smoothedTargets[x][z];
                     int carveDepth = Math.max(STREET_MIN_CARVE_DEPTH, maxLower);
-                    TerrainEmbeddingEngine.embedSurfaceColumnLimited(
-                            context,
-                            x,
-                            z,
-                            terrainHeight,
-                            targetY,
-                            base,
-                            maxRaise,
-                            carveDepth);
+                    TerrainEmbeddingEngine.embedSurfaceColumnSymmetricLimited(
+                            context, x, z, terrainHeight, targetY, base, maxRaise, carveDepth);
                 }
             }
         }
@@ -372,6 +437,12 @@ public class CityCoreStage implements GenerationStage {
                 }
                 int y = (int) Math.round(lerp(centerY, edgeY, apronT));
                 targets[x][z] = Math.max(centerY - BUILDING_APRON_MAX_DROP, Math.min(centerY, y));
+            }
+        }
+        smoothTargets(targets, 2, 1);
+        for (int x = BUILDING_APRON_INSET; x <= 15 - BUILDING_APRON_INSET; x++) {
+            for (int z = BUILDING_APRON_INSET; z <= 15 - BUILDING_APRON_INSET; z++) {
+                targets[x][z] = centerY;
             }
         }
         return targets;
@@ -495,6 +566,42 @@ public class CityCoreStage implements GenerationStage {
             return neighbor - maxStep;
         }
         return value;
+    }
+
+    private void smoothTargets(int[][] targets, int passes, int maxDeltaPerPass) {
+        if (targets == null || passes <= 0) {
+            return;
+        }
+        int[][] working = targets;
+        for (int pass = 0; pass < passes; pass++) {
+            int[][] next = new int[16][16];
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    int count = 0;
+                    int sum = 0;
+                    for (int dx = -1; dx <= 1; dx++) {
+                        for (int dz = -1; dz <= 1; dz++) {
+                            int nx = x + dx;
+                            int nz = z + dz;
+                            if (nx < 0 || nx >= 16 || nz < 0 || nz >= 16) {
+                                continue;
+                            }
+                            sum += working[nx][nz];
+                            count++;
+                        }
+                    }
+                    int avg = count <= 0 ? working[x][z] : Math.round((float) sum / (float) count);
+                    int current = working[x][z];
+                    int min = current - Math.max(0, maxDeltaPerPass);
+                    int max = current + Math.max(0, maxDeltaPerPass);
+                    next[x][z] = Math.max(min, Math.min(max, avg));
+                }
+            }
+            working = next;
+        }
+        for (int x = 0; x < 16; x++) {
+            System.arraycopy(working[x], 0, targets[x], 0, 16);
+        }
     }
 
     private int cornerBlendNW(GenerationContext context, BuildingInfo info, int fallbackY) {
@@ -919,6 +1026,83 @@ public class CityCoreStage implements GenerationStage {
         }
     }
 
+    private void healSliceArtifacts(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.hasBuilding) {
+            return;
+        }
+        int minY = Math.max(context.getWorldInfo().getMinHeight(),
+                info.getCityGroundLevel() - Math.max(0, info.cellars) * GenerationHeightModel.FLOOR_HEIGHT);
+        int maxY = Math.min(context.getWorldInfo().getMaxHeight() - 1, info.getMaxHeight() + 3);
+        Material facade = Material.STONE_BRICKS;
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                boolean edge = x == 0 || x == 15 || z == 0 || z == 15;
+                if (!edge) {
+                    continue;
+                }
+                for (int y = minY; y <= maxY; y++) {
+                    Material current = context.getBlockType(x, y, z);
+                    if (!isTerrainSliceMaterial(current)) {
+                        continue;
+                    }
+                    if (!hasAirNeighbor(context, x, y, z)) {
+                        continue;
+                    }
+                    context.setBlock(x, y, z, facade);
+                }
+            }
+        }
+    }
+
+    private boolean hasAirNeighbor(GenerationContext context, int x, int y, int z) {
+        return isAir(context.getBlockType(Math.max(0, x - 1), y, z))
+                || isAir(context.getBlockType(Math.min(15, x + 1), y, z))
+                || isAir(context.getBlockType(x, y, Math.max(0, z - 1)))
+                || isAir(context.getBlockType(x, y, Math.min(15, z + 1)));
+    }
+
+    private boolean isTerrainSliceMaterial(Material material) {
+        if (material == null) {
+            return false;
+        }
+        if (material == Material.STONE || material == Material.DEEPSLATE || material == Material.DIRT
+                || material == Material.GRASS_BLOCK || material == Material.SAND || material == Material.GRAVEL
+                || material == Material.CLAY || material == Material.PODZOL || material == Material.MYCELIUM
+                || material == Material.COARSE_DIRT || material == Material.ROOTED_DIRT || material == Material.MUD) {
+            return true;
+        }
+        String name = material.name();
+        return name.endsWith("_ORE") || name.endsWith("_STONE") || name.endsWith("_DIRT");
+    }
+
+    private void enforceFloorIntegrity(GenerationContext context, BuildingInfo info) {
+        if (info == null || !info.isCity) {
+            return;
+        }
+        LostCityProfile profile = getProfile(context);
+        if (profile != null && !profile.isFloorZeroHoleEnforcement()) {
+            return;
+        }
+        int floorY = info.getCityGroundLevel();
+        int baseY = floorY - 1;
+        int minY = context.getWorldInfo().getMinHeight();
+        if (floorY < minY || baseY < minY) {
+            return;
+        }
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                Material floor = context.getBlockType(x, floorY, z);
+                if (isAir(floor) || floor == Material.WATER || floor == Material.LAVA || floor == Material.BUBBLE_COLUMN) {
+                    context.setBlock(x, floorY, z, pickRuinFloorMaterial(context, x, z, floorY));
+                }
+                Material base = context.getBlockType(x, baseY, z);
+                if (isAir(base) || base == Material.WATER || base == Material.LAVA || base == Material.BUBBLE_COLUMN) {
+                    context.setBlock(x, baseY, z, Material.STONE_BRICKS);
+                }
+            }
+        }
+    }
+
     private StreetPartPlacement selectStreetPartPlacement(BuildingInfo info, StreetSettings streetSettings) {
         if (info == null || streetSettings == null) {
             return null;
@@ -1333,6 +1517,17 @@ public class CityCoreStage implements GenerationStage {
         }
 
         Material[][] baseMaterials = new Material[16][16];
+        BuildingInfo info = context.getBuildingInfo();
+        boolean footprintWindowCandidate = info != null
+                && info.hasBuilding
+                && info.multiBuilding == null
+                && (info.getFootprintChunkWidth() > 1 || info.getFootprintChunkDepth() > 1);
+        boolean useFootprintWindow = footprintWindowCandidate
+                && (part.getWidth() > 16 || part.getHeight() > 16);
+        int windowOffsetX = useFootprintWindow ? info.getFootprintLocalChunkX() * 16 : 0;
+        int windowOffsetZ = useFootprintWindow ? info.getFootprintLocalChunkZ() * 16 : 0;
+        int windowMaxX = windowOffsetX + 15;
+        int windowMaxZ = windowOffsetZ + 15;
         int maxLayers = Math.min(part.getDepth(), layers.size());
         for (int dy = 0; dy < maxLayers; dy++) {
             int y = baseY + dy;
@@ -1349,64 +1544,75 @@ public class CityCoreStage implements GenerationStage {
                 int maxX = Math.min(sourceMaxX, row.length());
                 for (int x = 0; x < maxX; x++) {
                     char token = row.charAt(x);
-                    int worldX = transform.mapX(x, z, boundX, boundZ);
-                    int worldZ = transform.mapZ(x, z, boundX, boundZ);
+                    int mappedX = transform.mapX(x, z, boundX, boundZ);
+                    int mappedZ = transform.mapZ(x, z, boundX, boundZ);
+                    if (useFootprintWindow) {
+                        if (mappedX < windowOffsetX || mappedX > windowMaxX
+                                || mappedZ < windowOffsetZ || mappedZ > windowMaxZ) {
+                            continue;
+                        }
+                        mappedX -= windowOffsetX;
+                        mappedZ -= windowOffsetZ;
+                    }
+                    if (mappedX < 0 || mappedX >= 16 || mappedZ < 0 || mappedZ >= 16) {
+                        continue;
+                    }
                     if (token == ' ') {
                         if (!overlay) {
-                            context.setBlock(worldX, y, worldZ, Material.AIR);
+                            context.setBlock(mappedX, y, mappedZ, Material.AIR);
                         }
                         continue;
                     }
                     if (token == '.') {
                         if (!overlay && dy == 0) {
-                            Material fallbackFloor = pickRuinFloorMaterial(context, worldX, worldZ, y);
-                            context.setBlock(worldX, y, worldZ, fallbackFloor);
-                            baseMaterials[worldX][worldZ] = fallbackFloor;
+                            Material fallbackFloor = pickRuinFloorMaterial(context, mappedX, mappedZ, y);
+                            context.setBlock(mappedX, y, mappedZ, fallbackFloor);
+                            baseMaterials[mappedX][mappedZ] = fallbackFloor;
                         } else if (!overlay) {
-                            context.setBlock(worldX, y, worldZ, Material.AIR);
+                            context.setBlock(mappedX, y, mappedZ, Material.AIR);
                         }
                         continue;
                     }
 
                     CompiledPalette.Information information = palette.getInformation(token);
-                    if (information != null && worldX >= 0 && worldX < 16 && worldZ >= 0 && worldZ < 16) {
-                        context.getBuildingInfo().addPalettePostTodo(worldX, y, worldZ, part.getName(), information);
+                    if (information != null) {
+                        context.getBuildingInfo().addPalettePostTodo(mappedX, y, mappedZ, part.getName(), information);
                     }
                     if (information != null && information.torch()) {
-                        context.setBlock(worldX, y, worldZ, Material.AIR);
+                        context.setBlock(mappedX, y, mappedZ, Material.AIR);
                         continue;
                     }
 
                     String definition = resolveFromPaletteString(context, palette, token);
                     if (definition == null || definition.isBlank()) {
                         if (!overlay && dy == 0) {
-                            Material fallbackFloor = pickRuinFloorMaterial(context, worldX, worldZ, y);
-                            context.setBlock(worldX, y, worldZ, fallbackFloor);
-                            baseMaterials[worldX][worldZ] = fallbackFloor;
+                            Material fallbackFloor = pickRuinFloorMaterial(context, mappedX, mappedZ, y);
+                            context.setBlock(mappedX, y, mappedZ, fallbackFloor);
+                            baseMaterials[mappedX][mappedZ] = fallbackFloor;
                         }
                         continue;
                     }
                     if (isAirDefinition(definition)) {
                         if (!overlay && dy == 0) {
-                            Material fallbackFloor = pickRuinFloorMaterial(context, worldX, worldZ, y);
-                            context.setBlock(worldX, y, worldZ, fallbackFloor);
-                            baseMaterials[worldX][worldZ] = fallbackFloor;
+                            Material fallbackFloor = pickRuinFloorMaterial(context, mappedX, mappedZ, y);
+                            context.setBlock(mappedX, y, mappedZ, fallbackFloor);
+                            baseMaterials[mappedX][mappedZ] = fallbackFloor;
                         } else {
-                            context.setBlock(worldX, y, worldZ, Material.AIR);
+                            context.setBlock(mappedX, y, mappedZ, Material.AIR);
                         }
                         continue;
                     }
                     if (definition.contains("structure_void")) {
                         continue;
                     }
-                    context.setBlock(worldX, y, worldZ, definition);
+                    context.setBlock(mappedX, y, mappedZ, definition);
                     if (dy == 0 && !overlay) {
                         Material resolved = context.resolveMaterial(definition, null);
                         if (resolved == null || resolved == Material.AIR) {
-                            resolved = pickRuinFloorMaterial(context, worldX, worldZ, y);
-                            context.setBlock(worldX, y, worldZ, resolved);
+                            resolved = pickRuinFloorMaterial(context, mappedX, mappedZ, y);
+                            context.setBlock(mappedX, y, mappedZ, resolved);
                         }
-                        baseMaterials[worldX][worldZ] = resolved;
+                        baseMaterials[mappedX][mappedZ] = resolved;
                     }
                 }
             }
@@ -1494,22 +1700,39 @@ public class CityCoreStage implements GenerationStage {
         hash ^= (long) localZ * 0x94d049bb133111ebL;
         hash ^= (long) y * 0xD6E8FEB86659FD93L;
         int roll = (int) Math.floorMod(hash, 100);
-        if (roll < 42) {
+        LostCityProfile profile = getProfile(context);
+        boolean mossEnabled = profile == null || profile.isFloorMossEnabled();
+        if (roll < 30) {
             return Material.STONE_BRICKS;
         }
-        if (roll < 68) {
+        if (roll < 52) {
             return Material.COBBLESTONE;
         }
-        if (roll < 86) {
+        if (roll < 67) {
             return Material.ANDESITE;
         }
-        if (roll < 95) {
+        if (roll < 79) {
             return Material.DEEPSLATE_BRICKS;
         }
-        if (roll < 99) {
-            return Material.STONE;
+        if (mossEnabled) {
+            if (roll < 89) {
+                return Material.MOSSY_STONE_BRICKS;
+            }
+            if (roll < 95) {
+                return Material.MOSS_BLOCK;
+            }
+            if (roll < 100) {
+                return Material.MOSSY_COBBLESTONE;
+            }
+        } else {
+            if (roll < 90) {
+                return Material.STONE;
+            }
+            if (roll < 100) {
+                return Material.DEEPSLATE;
+            }
         }
-        return Material.DEEPSLATE;
+        return Material.STONE_BRICKS;
     }
 
     /**

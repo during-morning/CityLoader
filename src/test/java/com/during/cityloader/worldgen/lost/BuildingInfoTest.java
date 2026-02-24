@@ -404,4 +404,45 @@ class BuildingInfoTest {
         assertEquals(Transform.ROTATE_90, info.getFloorTransform(0));
         assertEquals(Transform.ROTATE_NONE, info.getFloorPart2Transform(0));
     }
+
+    @Test
+    @DisplayName("跨区块建筑应优先使用大 footprint，1x1 占比应受控")
+    void shouldPreferLargeFootprintsOverOneByOne() {
+        WorldStyleRE forceCity = new Gson().fromJson(
+                "{\"settings\":{\"citychance\":1.0}}",
+                WorldStyleRE.class);
+        AssetRegistries.WORLDSTYLES.register(new com.during.cityloader.util.ResourceLocation("test", "forcecity_footprint"), forceCity);
+        WorldStyle style = AssetRegistries.WORLDSTYLES.get(world, "test:forcecity_footprint");
+        assertNotNull(style);
+        when(provider.getWorldStyle()).thenReturn(style);
+
+        LostCityProfile forcedProfile = provider.getProfile().copy("forced_footprint");
+        forcedProfile.setAllowCrossChunkAllBuildings(true);
+        forcedProfile.setFootprintWeight1x1(0.0f);
+        forcedProfile.setFootprintWeight2x2(35.0f);
+        forcedProfile.setFootprintWeight3x2(35.0f);
+        forcedProfile.setFootprintWeight4x4(30.0f);
+        forcedProfile.setFallbackTo1x1OnConflict(false);
+        when(provider.getProfile()).thenReturn(forcedProfile);
+
+        int buildingCount = 0;
+        int oneByOneCount = 0;
+        for (int x = 1; x <= 64; x++) {
+            for (int z = 1; z <= 64; z++) {
+                BuildingInfo info = BuildingInfo.getBuildingInfo(new ChunkCoord("world", x, z), provider);
+                if (!info.isCityRaw() || !info.hasBuilding) {
+                    continue;
+                }
+                buildingCount++;
+                if (info.getFootprintChunkWidth() == 1 && info.getFootprintChunkDepth() == 1) {
+                    oneByOneCount++;
+                }
+            }
+        }
+
+        assertTrue(buildingCount > 0, "应命中建筑区块以统计 footprint 比例");
+        float oneByOneRatio = oneByOneCount / (float) buildingCount;
+        assertTrue(oneByOneRatio < 0.20f,
+                "1x1 footprint 占比应低于 20%，实际为 " + oneByOneRatio);
+    }
 }

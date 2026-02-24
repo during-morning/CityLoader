@@ -147,6 +147,18 @@ public class LostCityProfile {
     private int buildingMaxCellars = 3;
     private float buildingDoorwayChance = 0.6f;
     private float buildingFrontChance = 0.2f;
+    private boolean allowCrossChunkAllBuildings = true;
+    private float footprintWeight1x1 = 0.0f;
+    private float footprintWeight2x2 = 35.0f;
+    private float footprintWeight3x2 = 35.0f;
+    private float footprintWeight4x4 = 30.0f;
+    private float targetBuildingCoverage = 0.45f;
+    private boolean streetConnectivityPriorityHigh = true;
+    private boolean fallbackTo1x1OnConflict = false;
+    private int buildingAirClearanceTopBuffer = 6;
+    private boolean forceFullBuildingSurfaceSmoothing = true;
+    private boolean floorZeroHoleEnforcement = true;
+    private boolean floorMossEnabled = true;
 
     private float parkChance = 0.2f;
     private float corridorChance = 0.7f;
@@ -313,6 +325,18 @@ public class LostCityProfile {
         buildingMaxCellars = other.buildingMaxCellars;
         buildingDoorwayChance = other.buildingDoorwayChance;
         buildingFrontChance = other.buildingFrontChance;
+        allowCrossChunkAllBuildings = other.allowCrossChunkAllBuildings;
+        footprintWeight1x1 = other.footprintWeight1x1;
+        footprintWeight2x2 = other.footprintWeight2x2;
+        footprintWeight3x2 = other.footprintWeight3x2;
+        footprintWeight4x4 = other.footprintWeight4x4;
+        targetBuildingCoverage = other.targetBuildingCoverage;
+        streetConnectivityPriorityHigh = other.streetConnectivityPriorityHigh;
+        fallbackTo1x1OnConflict = other.fallbackTo1x1OnConflict;
+        buildingAirClearanceTopBuffer = other.buildingAirClearanceTopBuffer;
+        forceFullBuildingSurfaceSmoothing = other.forceFullBuildingSurfaceSmoothing;
+        floorZeroHoleEnforcement = other.floorZeroHoleEnforcement;
+        floorMossEnabled = other.floorMossEnabled;
         parkChance = other.parkChance;
         corridorChance = other.corridorChance;
         bridgeChance = other.bridgeChance;
@@ -1226,6 +1250,102 @@ public class LostCityProfile {
 
     public void setBuildingFrontChance(float buildingFrontChance) {
         this.buildingFrontChance = buildingFrontChance;
+    }
+
+    public boolean isAllowCrossChunkAllBuildings() {
+        return allowCrossChunkAllBuildings;
+    }
+
+    public void setAllowCrossChunkAllBuildings(boolean allowCrossChunkAllBuildings) {
+        this.allowCrossChunkAllBuildings = allowCrossChunkAllBuildings;
+    }
+
+    public float getFootprintWeight1x1() {
+        return footprintWeight1x1;
+    }
+
+    public void setFootprintWeight1x1(float footprintWeight1x1) {
+        this.footprintWeight1x1 = footprintWeight1x1;
+    }
+
+    public float getFootprintWeight2x2() {
+        return footprintWeight2x2;
+    }
+
+    public void setFootprintWeight2x2(float footprintWeight2x2) {
+        this.footprintWeight2x2 = footprintWeight2x2;
+    }
+
+    public float getFootprintWeight3x2() {
+        return footprintWeight3x2;
+    }
+
+    public void setFootprintWeight3x2(float footprintWeight3x2) {
+        this.footprintWeight3x2 = footprintWeight3x2;
+    }
+
+    public float getFootprintWeight4x4() {
+        return footprintWeight4x4;
+    }
+
+    public void setFootprintWeight4x4(float footprintWeight4x4) {
+        this.footprintWeight4x4 = footprintWeight4x4;
+    }
+
+    public float getTargetBuildingCoverage() {
+        return targetBuildingCoverage;
+    }
+
+    public void setTargetBuildingCoverage(float targetBuildingCoverage) {
+        this.targetBuildingCoverage = targetBuildingCoverage;
+    }
+
+    public boolean isStreetConnectivityPriorityHigh() {
+        return streetConnectivityPriorityHigh;
+    }
+
+    public void setStreetConnectivityPriorityHigh(boolean streetConnectivityPriorityHigh) {
+        this.streetConnectivityPriorityHigh = streetConnectivityPriorityHigh;
+    }
+
+    public boolean isFallbackTo1x1OnConflict() {
+        return fallbackTo1x1OnConflict;
+    }
+
+    public void setFallbackTo1x1OnConflict(boolean fallbackTo1x1OnConflict) {
+        this.fallbackTo1x1OnConflict = fallbackTo1x1OnConflict;
+    }
+
+    public int getBuildingAirClearanceTopBuffer() {
+        return buildingAirClearanceTopBuffer;
+    }
+
+    public void setBuildingAirClearanceTopBuffer(int buildingAirClearanceTopBuffer) {
+        this.buildingAirClearanceTopBuffer = Math.max(0, buildingAirClearanceTopBuffer);
+    }
+
+    public boolean isForceFullBuildingSurfaceSmoothing() {
+        return forceFullBuildingSurfaceSmoothing;
+    }
+
+    public void setForceFullBuildingSurfaceSmoothing(boolean forceFullBuildingSurfaceSmoothing) {
+        this.forceFullBuildingSurfaceSmoothing = forceFullBuildingSurfaceSmoothing;
+    }
+
+    public boolean isFloorZeroHoleEnforcement() {
+        return floorZeroHoleEnforcement;
+    }
+
+    public void setFloorZeroHoleEnforcement(boolean floorZeroHoleEnforcement) {
+        this.floorZeroHoleEnforcement = floorZeroHoleEnforcement;
+    }
+
+    public boolean isFloorMossEnabled() {
+        return floorMossEnabled;
+    }
+
+    public void setFloorMossEnabled(boolean floorMossEnabled) {
+        this.floorMossEnabled = floorMossEnabled;
     }
 
     public float getParkChance() {

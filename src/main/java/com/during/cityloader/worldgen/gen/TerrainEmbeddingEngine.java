@@ -90,6 +90,31 @@ public final class TerrainEmbeddingEngine {
         }
     }
 
+    /**
+     * 对称受限地形修正：抬升与挖低均按上限执行，并确保目标地坪不会被挖空。
+     */
+    public static void embedSurfaceColumnSymmetricLimited(GenerationContext context,
+                                                          int x,
+                                                          int z,
+                                                          int terrainHeight,
+                                                          int targetY,
+                                                          Material fillMaterial,
+                                                          int maxRaise,
+                                                          int maxLower) {
+        embedSurfaceColumnLimited(context, x, z, terrainHeight, targetY, fillMaterial, maxRaise, maxLower);
+        Material surface = context.getBlockType(x, targetY, z);
+        if (isAirLike(surface) || surface == Material.WATER || surface == Material.LAVA || surface == Material.BUBBLE_COLUMN) {
+            context.setBlock(x, targetY, z, fillMaterial == null ? Material.STONE : fillMaterial);
+        }
+    }
+
+    private static boolean isAirLike(Material material) {
+        return material == null
+                || material == Material.AIR
+                || material == Material.CAVE_AIR
+                || material == Material.VOID_AIR;
+    }
+
     public static void supportColumnToTerrain(GenerationContext context,
                                               int x,
                                               int z,

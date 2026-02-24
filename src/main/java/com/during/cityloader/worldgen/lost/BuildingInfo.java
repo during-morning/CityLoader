@@ -40,7 +40,6 @@ import java.util.function.Supplier;
 public class BuildingInfo {
 
     private static final int FLOOR_HEIGHT = 6;
-    private static final int MULTI_SELECTOR_GRID = 4;
 
     public final ChunkCoord coord;
     public final IDimensionInfo provider;
@@ -71,6 +70,12 @@ public class BuildingInfo {
     public int cityLevel;
     public ILostCityMultiBuilding multiBuilding;
     public MultiPos multiBuildingPos;
+    private int footprintAnchorChunkX;
+    private int footprintAnchorChunkZ;
+    private int footprintLocalChunkX;
+    private int footprintLocalChunkZ;
+    private int footprintChunkWidth = 1;
+    private int footprintChunkDepth = 1;
     public boolean xBridge;
     public boolean zBridge;
 
@@ -103,9 +108,7 @@ public class BuildingInfo {
 
         this.cityStyle = resolveCityStyle(random, biomeName);
 
-        // LostCities 语义：cityFactor 需要超过 cityThreshold 才算城市区块
-        float cityFactor = City.getCityFactor(coord, provider, profile);
-        this.isCity = smoothCityMembership(coord, provider, profile, cityFactor > profile.getCityThreshold());
+        this.isCity = isCityChunk(coord, provider, profile);
 
         this.cityLevel = isCity ? getCityLevel(coord, provider) : 0;
         CITY_LEVEL_CACHE.put(coord, this.cityLevel);
@@ -115,12 +118,23 @@ public class BuildingInfo {
         this.xRailCorridor = false;
         this.zRailCorridor = false;
 
-        boolean streetChunk = isStreetChunk(coord.chunkX(), coord.chunkZ());
         boolean infrastructureChunk = highwayXLevel > 0 || highwayZLevel > 0;
-        this.hasStreet = isCity && (streetChunk || infrastructureChunk);
-        this.hasBuilding = isCity && !hasStreet && shouldPlaceBuildingPlot(coord, provider.getSeed());
+        PlotPlanner.FootprintPlacement footprint = isCity && !infrastructureChunk
+                ? PlotPlanner.resolve(provider, coord, this::isBuildablePlotChunk, profile)
+                : PlotPlanner.FootprintPlacement.none();
+        if (!footprint.active() && isCity && !infrastructureChunk && City.getPredefinedCity(coord) != null) {
+            footprint = new PlotPlanner.FootprintPlacement(true, coord.chunkX(), coord.chunkZ(), 1, 1, 0, 0, Long.MAX_VALUE);
+        }
+        this.hasBuilding = isCity && !infrastructureChunk && footprint.active();
+        this.hasStreet = isCity && (infrastructureChunk || !this.hasBuilding);
+        this.footprintAnchorChunkX = footprint.active() ? footprint.anchorX() : coord.chunkX();
+        this.footprintAnchorChunkZ = footprint.active() ? footprint.anchorZ() : coord.chunkZ();
+        this.footprintLocalChunkX = footprint.active() ? footprint.localX() : 0;
+        this.footprintLocalChunkZ = footprint.active() ? footprint.localZ() : 0;
+        this.footprintChunkWidth = footprint.active() ? Math.max(1, footprint.width()) : 1;
+        this.footprintChunkDepth = footprint.active() ? Math.max(1, footprint.depth()) : 1;
 
-        MultiPlacement placement = resolveMultiBuilding(cityStyle, provider, coord);
+        MultiPlacement placement = resolveFootprintPlacement(cityStyle, footprint);
         this.multiBuilding = placement.multiBuilding;
         this.multiBuildingPos = placement.multiPos;
         if (!hasStreet && placement.multiBuilding instanceof MultiBuilding mb && placement.multiPos != null) {
@@ -130,11 +144,14 @@ public class BuildingInfo {
             }
         }
 
-        Building resolvedBuilding = hasBuilding ? resolveBuilding(random, cityStyle, placement, provider, coord) : null;
+        Random buildingRandom = footprint.active()
+                ? chunkRandom(provider.getSeed(), footprint.anchorX(), footprint.anchorZ(), 0x7F4A7C159E3779B9L)
+                : random;
+        Building resolvedBuilding = hasBuilding ? resolveBuilding(buildingRandom, cityStyle, placement, provider, coord) : null;
         this.buildingType = resolvedBuilding;
 
         if (resolvedBuilding != null) {
-            configureFloors(random, resolvedBuilding, cityStyle, biomeName);
+            configureFloors(buildingRandom, resolvedBuilding, cityStyle, biomeName);
         } else {
             this.floors = 0;
             this.cellars = 0;
@@ -143,6 +160,9 @@ public class BuildingInfo {
             this.floorTransforms = new Transform[0];
             this.floorTransforms2 = new Transform[0];
             this.hasBuilding = false;
+            this.hasStreet = isCity && !infrastructureChunk;
+            this.multiBuilding = null;
+            this.multiBuildingPos = null;
         }
         initializeCorridorCandidates();
 
@@ -176,6 +196,23 @@ public class BuildingInfo {
         }
         float cityFactor = City.getCityFactor(coord, provider, profile);
         return cityFactor > profile.getCityThreshold();
+    }
+
+    public static boolean isCityChunk(ChunkCoord coord, IDimensionInfo provider, LostCityProfile profile) {
+        if (coord == null || provider == null || profile == null) {
+            return false;
+        }
+        float cityFactor = City.getCityFactor(coord, provider, profile);
+        boolean baseCity = cityFactor > profile.getCityThreshold();
+        if (baseCity) {
+            return true;
+        }
+        int cityNeighbors = 0;
+        if (isCityRaw(coord.west(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.east(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.north(), provider, profile)) cityNeighbors++;
+        if (isCityRaw(coord.south(), provider, profile)) cityNeighbors++;
+        return cityNeighbors >= 3;
     }
 
     public static int getCityLevel(ChunkCoord coord, IDimensionInfo provider) {
@@ -221,6 +258,30 @@ public class BuildingInfo {
 
     public int getCityGroundLevel() {
         return groundLevel + cityLevel * FLOOR_HEIGHT;
+    }
+
+    public int getFootprintLocalChunkX() {
+        return footprintLocalChunkX;
+    }
+
+    public int getFootprintLocalChunkZ() {
+        return footprintLocalChunkZ;
+    }
+
+    public int getFootprintAnchorChunkX() {
+        return footprintAnchorChunkX;
+    }
+
+    public int getFootprintAnchorChunkZ() {
+        return footprintAnchorChunkZ;
+    }
+
+    public int getFootprintChunkWidth() {
+        return footprintChunkWidth;
+    }
+
+    public int getFootprintChunkDepth() {
+        return footprintChunkDepth;
     }
 
     public int getMaxHeight() {
@@ -388,6 +449,7 @@ public class BuildingInfo {
         BUILDING_INFO_MAP.cleanup();
         CITY_INFO_MAP.cleanup();
         CITY_LEVEL_CACHE.cleanup();
+        PlotPlanner.cleanupCache();
         DamageArea.resetCache();
         Railway.cleanCache();
         City.cleanCache();
@@ -397,6 +459,7 @@ public class BuildingInfo {
         BUILDING_INFO_MAP.clear();
         CITY_INFO_MAP.clear();
         CITY_LEVEL_CACHE.clear();
+        PlotPlanner.resetCache();
         DamageArea.resetCache();
         Railway.cleanCache();
         City.cleanCache();
@@ -561,72 +624,93 @@ public class BuildingInfo {
         zRailCorridor = corridorRandom.nextFloat() < chance;
     }
 
-    private boolean isStreetChunk(int chunkX, int chunkZ) {
-        int gridSize = 4;
-        int streetWidth = 1;
-        int gx = Math.floorMod(chunkX, gridSize);
-        int gz = Math.floorMod(chunkZ, gridSize);
-        return gx < streetWidth || gz < streetWidth;
+    private boolean isBuildablePlotChunk(int chunkX, int chunkZ) {
+        ChunkCoord candidate = new ChunkCoord(coord.dimension(), chunkX, chunkZ);
+        if (!isCityChunk(candidate, provider, profile)) {
+            return false;
+        }
+        int highwayX = Math.floorMod(chunkZ, 32) == 0 ? 1 : 0;
+        int highwayZ = Math.floorMod(chunkX, 32) == 0 ? 1 : 0;
+        return highwayX <= 0 && highwayZ <= 0;
     }
 
-    private MultiPlacement resolveMultiBuilding(CityStyle cityStyle, IDimensionInfo provider, ChunkCoord coord) {
+    private MultiPlacement resolveFootprintPlacement(CityStyle cityStyle,
+                                                     PlotPlanner.FootprintPlacement footprint) {
         if (cityStyle == null) {
             return MultiPlacement.none();
         }
-
-        int selectorX = Math.floorDiv(coord.chunkX(), MULTI_SELECTOR_GRID);
-        int selectorZ = Math.floorDiv(coord.chunkZ(), MULTI_SELECTOR_GRID);
-        Random multiTriggerRandom = chunkRandom(provider.getSeed(), selectorX, selectorZ, 0x55AA7711L);
-        if (multiTriggerRandom.nextFloat() >= 0.12f) {
-            return MultiPlacement.none();
-        }
-        String multiId = pickFromCityStyleChain(
-                cityStyle,
-                "multibuildings",
-                chunkRandom(provider.getSeed(), selectorX, selectorZ, 0x1234ABCDL));
-        if (multiId == null) {
+        if (!footprint.active() || footprint.width() <= 0 || footprint.depth() <= 0) {
             return MultiPlacement.none();
         }
 
-        MultiBuilding candidate = findMultiBuilding(cityStyle.getId(), multiId);
-        if (candidate == null || candidate.getDimX() <= 1 && candidate.getDimZ() <= 1) {
+        MultiBuilding candidate = resolveMultiBuildingForFootprint(cityStyle, footprint);
+        if (candidate == null) {
             return MultiPlacement.none();
         }
 
-        int posX = Math.floorMod(coord.chunkX(), Math.max(1, candidate.getDimX()));
-        int posZ = Math.floorMod(coord.chunkZ(), Math.max(1, candidate.getDimZ()));
-        MultiPos pos = new MultiPos(posX, posZ, Math.max(1, candidate.getDimX()), Math.max(1, candidate.getDimZ()));
+        int dimX = Math.max(1, candidate.getDimX());
+        int dimZ = Math.max(1, candidate.getDimZ());
+        if (dimX != footprint.width() || dimZ != footprint.depth()) {
+            return MultiPlacement.none();
+        }
 
+        MultiPos pos = new MultiPos(
+                Math.floorMod(footprint.localX(), dimX),
+                Math.floorMod(footprint.localZ(), dimZ),
+                dimX,
+                dimZ);
         return new MultiPlacement(candidate, pos);
     }
 
-    private boolean shouldPlaceBuildingPlot(ChunkCoord coord, long worldSeed) {
-        long hash = worldSeed ^ 0xC2B2AE3D27D4EB4FL;
-        hash ^= (long) coord.chunkX() * 0x9E3779B97F4A7C15L;
-        hash ^= (long) coord.chunkZ() * 0x94D049BB133111EBL;
-        int roll = Math.floorMod((int) (hash ^ (hash >>> 32)), 100);
+    private MultiBuilding resolveMultiBuildingForFootprint(CityStyle cityStyle, PlotPlanner.FootprintPlacement footprint) {
+        Random multiRandom = chunkRandom(provider.getSeed(), footprint.anchorX(), footprint.anchorZ(), 0x55AA7711L);
+        List<WeightedMultiCandidate> candidates = collectWeightedMultiCandidates(cityStyle, footprint.width(), footprint.depth());
+        if (candidates.isEmpty()) {
+            return null;
+        }
+        float totalWeight = 0.0f;
+        for (WeightedMultiCandidate candidate : candidates) {
+            totalWeight += candidate.weight();
+        }
+        if (totalWeight <= 0.0001f) {
+            return candidates.get(0).multi();
+        }
 
-        int districtX = Math.floorDiv(coord.chunkX(), 3);
-        int districtZ = Math.floorDiv(coord.chunkZ(), 3);
-        long districtHash = worldSeed ^ 0x165667B19E3779F9L;
-        districtHash ^= (long) districtX * 0xD1B54A32D192ED03L;
-        districtHash ^= (long) districtZ * 0x94D049BB133111EBL;
-        int districtRoll = Math.floorMod((int) (districtHash ^ (districtHash >>> 32)), 100);
-
-        int threshold = districtRoll < 35 ? 8 : 18;
-        return roll < threshold;
+        float roll = multiRandom.nextFloat() * totalWeight;
+        float cursor = 0.0f;
+        for (WeightedMultiCandidate candidate : candidates) {
+            cursor += candidate.weight();
+            if (roll <= cursor) {
+                return candidate.multi();
+            }
+        }
+        return candidates.get(candidates.size() - 1).multi();
     }
 
-    private boolean smoothCityMembership(ChunkCoord coord, IDimensionInfo provider, LostCityProfile profile, boolean baseCity) {
-        if (baseCity) {
-            return true;
+    private List<WeightedMultiCandidate> collectWeightedMultiCandidates(CityStyle cityStyle, int width, int depth) {
+        List<WeightedMultiCandidate> resolved = new ArrayList<>();
+        for (CityStyle style : resolveCityStyleChain(cityStyle)) {
+            List<SelectorEntry> entries = new ArrayList<>();
+            entries.addAll(style.getSelector("multibuildings"));
+            appendLegacySelectorEntries(style, "multibuildings", entries);
+            for (SelectorEntry entry : entries) {
+                if (entry == null || entry.getValue() == null || entry.getValue().isBlank()) {
+                    continue;
+                }
+                MultiBuilding candidate = findMultiBuilding(style.getId(), entry.getValue());
+                if (candidate == null) {
+                    continue;
+                }
+                int dimX = Math.max(1, candidate.getDimX());
+                int dimZ = Math.max(1, candidate.getDimZ());
+                if (dimX != width || dimZ != depth) {
+                    continue;
+                }
+                float weight = Math.max(0.0001f, entry.getFactor());
+                resolved.add(new WeightedMultiCandidate(candidate, weight));
+            }
         }
-        int cityNeighbors = 0;
-        if (isCityRaw(coord.west(), provider, profile)) cityNeighbors++;
-        if (isCityRaw(coord.east(), provider, profile)) cityNeighbors++;
-        if (isCityRaw(coord.north(), provider, profile)) cityNeighbors++;
-        if (isCityRaw(coord.south(), provider, profile)) cityNeighbors++;
-        return cityNeighbors >= 3;
+        return resolved;
     }
 
     private Building resolveBuilding(Random random, CityStyle cityStyle, MultiPlacement placement,
@@ -1169,6 +1253,9 @@ public class BuildingInfo {
         private static MultiPlacement none() {
             return new MultiPlacement(null, null);
         }
+    }
+
+    private record WeightedMultiCandidate(MultiBuilding multi, float weight) {
     }
 
     public record ConditionTodo(String condition, String part, String building) {

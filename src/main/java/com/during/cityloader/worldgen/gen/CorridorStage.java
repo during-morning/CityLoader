@@ -4,9 +4,7 @@ import com.during.cityloader.worldgen.LostCityProfile;
 import com.during.cityloader.worldgen.lost.BuildingInfo;
 import com.during.cityloader.worldgen.lost.cityassets.CityStyle;
 import com.during.cityloader.worldgen.lost.cityassets.CompiledPalette;
-import com.during.cityloader.worldgen.lost.regassets.data.RailSettings;
 import org.bukkit.Material;
-import org.bukkit.block.data.Rail;
 
 import java.util.Locale;
 import java.util.Map;
@@ -61,7 +59,6 @@ public class CorridorStage implements GenerationStage {
         CityStyle cityStyle = info.getCityStyle();
         CompiledPalette palette = context.palette();
         Map<String, String> corridorBlocks = cityStyle == null ? Map.of() : cityStyle.getCorridorBlocks();
-        RailSettings railSettings = cityStyle == null ? null : cityStyle.getRailBlocks();
 
         Material roof = resolvePaletteCharMaterial(context, palette, corridorBlocks.get("roof"), Material.STONE_BRICKS);
         Material glass = resolvePaletteCharMaterial(context, palette, corridorBlocks.get("glass"), Material.GLASS);
@@ -76,13 +73,7 @@ public class CorridorStage implements GenerationStage {
                 if (inCorridor) {
                     context.setBlock(x, height, z, roof);
 
-                    if (xRail && z == 10) {
-                        setRail(context, x, height + 1, z, Rail.Shape.EAST_WEST);
-                    } else if (zRail && x == 10) {
-                        setRail(context, x, height + 1, z, Rail.Shape.NORTH_SOUTH);
-                    } else {
-                        context.setBlock(x, height + 1, z, Material.AIR);
-                    }
+                    context.setBlock(x, height + 1, z, Material.AIR);
 
                     context.setBlock(x, height + 2, z, Material.AIR);
                     context.setBlock(x, height + 3, z, Material.AIR);
@@ -104,10 +95,6 @@ public class CorridorStage implements GenerationStage {
                     }
                 }
             }
-        }
-        if (railSettings != null && railSettings.getRailMain() != null) {
-            // Keep reading railmain to stay data-compatible with LC configs even when specific corridor rails are vanilla-shaped.
-            resolvePaletteCharMaterial(context, palette, railSettings.getRailMain(), Material.RAIL);
         }
     }
 
@@ -165,7 +152,4 @@ public class CorridorStage implements GenerationStage {
         return material == null ? fallback : material;
     }
 
-    private void setRail(GenerationContext context, int x, int y, int z, Rail.Shape shape) {
-        context.setRail(x, y, z, Material.RAIL, shape, false);
-    }
 }

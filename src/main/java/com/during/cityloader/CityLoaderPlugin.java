@@ -46,7 +46,7 @@ public class CityLoaderPlugin extends JavaPlugin {
     public void onEnable() {
         try {
             getLogger().info("=================================");
-            getLogger().info("  CityLoader v2026-02-18 正在启动...");
+            getLogger().info("  CityLoader v2026-02-23 正在启动...");
             getLogger().info("  版本: " + getDescription().getVersion());
             getLogger().info("=================================");
 

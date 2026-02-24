@@ -1,6 +1,7 @@
 package com.during.cityloader.worldgen.lost.regassets;
 
 import com.during.cityloader.util.ResourceLocation;
+import com.during.cityloader.worldgen.lost.regassets.data.PredefinedBuilding;
 import com.during.cityloader.worldgen.lost.regassets.data.PredefinedStreet;
 import com.during.cityloader.worldgen.lost.regassets.data.PartRef;
 import com.google.gson.Gson;
@@ -1358,6 +1359,49 @@ class AssetParsingTest {
         assertEquals("end", second.getType(), "第二条 streetpart 别名应映射为 type");
         assertEquals(Boolean.TRUE, second.getNorth(), "第二条 n 别名应映射为 north");
         assertEquals(Boolean.FALSE, second.getEast(), "第二条 e 别名应映射为 east");
+    }
+
+    @Test
+    @DisplayName("应该正确解析预定义城市建筑偏移字段别名")
+    void shouldParsePredefinedBuildingOffsetAliases() {
+        String json = """
+            {
+              "dimension": "world",
+              "chunkx": 32,
+              "chunkz": -8,
+              "buildings": [
+                {
+                  "building": "cabin",
+                  "chunkx": 2,
+                  "chunkz": -3,
+                  "multi": true
+                },
+                {
+                  "building": "warehouse",
+                  "rel_chunk_x": -1,
+                  "rel_chunk_z": 4,
+                  "prevent_ruins": true
+                }
+              ]
+            }
+            """;
+
+        PredefinedCityRE city = gson.fromJson(json, PredefinedCityRE.class);
+        assertNotNull(city, "预定义城市不应为null");
+        assertNotNull(city.getPredefinedBuildings(), "预定义建筑列表不应为null");
+        assertEquals(2, city.getPredefinedBuildings().size(), "应解析出2个预定义建筑");
+
+        PredefinedBuilding first = city.getPredefinedBuildings().get(0);
+        assertEquals("cabin", first.getBuilding(), "第一条 building 应匹配");
+        assertEquals(2, first.relChunkX(), "第一条 chunkx 别名应映射为 relChunkX");
+        assertEquals(-3, first.relChunkZ(), "第一条 chunkz 别名应映射为 relChunkZ");
+        assertTrue(first.multi(), "第一条 multi 应为 true");
+
+        PredefinedBuilding second = city.getPredefinedBuildings().get(1);
+        assertEquals("warehouse", second.getBuilding(), "第二条 building 应匹配");
+        assertEquals(-1, second.relChunkX(), "第二条 rel_chunk_x 应匹配");
+        assertEquals(4, second.relChunkZ(), "第二条 rel_chunk_z 应匹配");
+        assertTrue(second.preventRuins(), "第二条 prevent_ruins 应为 true");
     }
 
     @Test

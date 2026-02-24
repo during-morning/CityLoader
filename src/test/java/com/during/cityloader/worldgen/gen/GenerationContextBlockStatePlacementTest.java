@@ -116,7 +116,26 @@ class GenerationContextBlockStatePlacementTest {
                 argThat(data -> data != null && data.getMaterial() == Material.WALL_TORCH));
     }
 
+    @Test
+    @DisplayName("越界局部坐标应按绝对坐标写入相邻区块而非回卷到本区块")
+    void shouldPlaceBlocksOutsidePrimaryChunkWithoutWrapping() {
+        ContextFixture fixture = createContext(10, -3);
+
+        fixture.context().setBlock(20, 70, 1, Material.STONE_BRICKS); // worldX = 180, worldZ = -47
+        fixture.context().flush();
+
+        verify(fixture.region()).setBlockData(
+                eq(180),
+                eq(70),
+                eq(-47),
+                argThat(data -> data != null && data.getMaterial() == Material.STONE_BRICKS));
+    }
+
     private ContextFixture createContext() {
+        return createContext(0, 0);
+    }
+
+    private ContextFixture createContext(int chunkX, int chunkZ) {
         WorldInfo worldInfo = mock(WorldInfo.class);
         when(worldInfo.getName()).thenReturn("world");
         when(worldInfo.getMinHeight()).thenReturn(-64);
@@ -139,8 +158,8 @@ class GenerationContextBlockStatePlacementTest {
                 dimensionInfo,
                 info,
                 new Random(2026L),
-                0,
-                0);
+                chunkX,
+                chunkZ);
         return new ContextFixture(context, region);
     }
 

@@ -394,6 +394,18 @@ public class ConfigManager {
         setInt(section, "building-max-cellars", profile::setBuildingMaxCellars);
         setFloat(section, "building-doorway-chance", profile::setBuildingDoorwayChance);
         setFloat(section, "building-front-chance", profile::setBuildingFrontChance);
+        setBoolean(section, "allow-cross-chunk-all-buildings", profile::setAllowCrossChunkAllBuildings);
+        setFloat(section, "footprint-weight-1x1", profile::setFootprintWeight1x1);
+        setFloat(section, "footprint-weight-2x2", profile::setFootprintWeight2x2);
+        setFloat(section, "footprint-weight-3x2", profile::setFootprintWeight3x2);
+        setFloat(section, "footprint-weight-4x4", profile::setFootprintWeight4x4);
+        setFloat(section, "target-building-coverage", profile::setTargetBuildingCoverage);
+        setBoolean(section, "street-connectivity-priority-high", profile::setStreetConnectivityPriorityHigh);
+        setBoolean(section, "fallback-to-1x1-on-conflict", profile::setFallbackTo1x1OnConflict);
+        setInt(section, "building-air-clearance-top-buffer", profile::setBuildingAirClearanceTopBuffer);
+        setBoolean(section, "force-full-building-surface-smoothing", profile::setForceFullBuildingSurfaceSmoothing);
+        setBoolean(section, "floor-zero-hole-enforcement", profile::setFloorZeroHoleEnforcement);
+        setBoolean(section, "floor-moss-enabled", profile::setFloorMossEnabled);
 
         setFloat(section, "park-chance", profile::setParkChance);
         setFloat(section, "corridor-chance", profile::setCorridorChance);
